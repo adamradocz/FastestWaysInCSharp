@@ -2,8 +2,10 @@ namespace FastestWaysInCSharp.StringManipulation;
 
 public static class ConvertStringToInt
 {
-    private static readonly string _textAsString = "1234567890";
     private const int _numericAsciiOffset = 48;
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Mimic a real-life situation, when the variable is changing.")]
+    private static string _textAsString = "1234567890";
 
     public static int IntParse() => int.Parse(_textAsString);
 

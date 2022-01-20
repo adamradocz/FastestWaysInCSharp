@@ -1,7 +1,8 @@
 namespace FastestWaysInCSharp.StringManipulation;
 public static class MultiSubstring
 {
-    private const string _text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Mimic a real-life situation, when the variable is changing.")]
+    private static string _text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
     public static string Substring()
     {
@@ -124,6 +125,7 @@ public static class MultiSubstring
         });
     }
 
+    // Bad code. It's not cacheable.
     public static string StringCreateClosure()
     {
         return string.Create(22, _text, (buffer, value) =>
