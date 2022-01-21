@@ -6,7 +6,8 @@ BenchmarkSwitcher benchmarkSwitcher = new(
     {
         typeof(MultiSubstringBenchmarks),
         typeof(CharacterReplaceBenchmarks),
-        typeof(ConvertStringToIntBenchmarks)
+        typeof(ConvertStringToIntBenchmarks),
+        typeof(ConvertSubstringToIntBenchmarks)
     });
 
 benchmarkSwitcher.Run(args);
