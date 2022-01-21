@@ -1,9 +1,11 @@
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
 
-public class ReadLineSplit
+public static class ReadLineSplit
 {
-    public void Parse(string csvFilePath)
+    public static List<FakeName> Parse(in string csvFilePath)
     {
+        var fakeNames = new List<FakeName>();
+
         using var reader = File.OpenText(csvFilePath);
 
         // Skip the header
@@ -14,14 +16,14 @@ public class ReadLineSplit
             string? line = reader.ReadLine();
             if (!string.IsNullOrEmpty(line))
             {
-                _ = ParseLine(line);
+                fakeNames.Add(ParseLine(line));
             }
         }
 
-        reader.Close();
+        return fakeNames;
     }
 
-    private FakeName ParseLine(in string line)
+    private static FakeName ParseLine(in string line)
     {
         string[] parts = line.Split(';');
         return new FakeName
