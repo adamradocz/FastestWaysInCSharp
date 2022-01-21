@@ -2,6 +2,7 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
 public class FakeName
 {
+    public int Id { get; set; }
     public Guid Guid { get; set; }
     public string? Gender { get; set; }
     public string? GivenName { get; set; }
@@ -10,6 +11,5 @@ public class FakeName
     public string? StreetAddress { get; set; }
     public string? EmailAddress { get; set; }
     public DateOnly Birthday { get; set; }
-    public int WesternUnionMtcn { get; set; }
-    public Uri? Domain { get; set; }
+    public string? Domain { get; set; }
 }

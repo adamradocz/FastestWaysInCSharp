@@ -2,5 +2,5 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
 public interface ILineParser
 {
-    public void ParseLine(string csvFilePath);
+    public FakeName ParseLine(string line);
 }

@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Running;
+using FastestWaysInCSharp.Benchmarks.FileProcessing;
 using FastestWaysInCSharp.Benchmarks.StringManipulation;
 
 BenchmarkSwitcher benchmarkSwitcher = new(
@@ -7,7 +8,8 @@ BenchmarkSwitcher benchmarkSwitcher = new(
         typeof(MultiSubstringBenchmarks),
         typeof(CharacterReplaceBenchmarks),
         typeof(ConvertStringToIntBenchmarks),
-        typeof(ConvertSubstringToIntBenchmarks)
+        typeof(ConvertSubstringToIntBenchmarks),
+        typeof(ParseCsvBenchmarks)
     });
 
 benchmarkSwitcher.Run(args);
