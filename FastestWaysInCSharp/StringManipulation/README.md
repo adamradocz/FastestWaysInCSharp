@@ -64,11 +64,10 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 
 **Task:**
 
-Given the following text: "1234567890"
-
+Given a random pozitive integer in string format.
 Convert the text to int.
 
-The expected result is: 1234567890
+Benchmark: "1234567890" -> 1234567890
 
 ``` ini
 
@@ -93,7 +92,7 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 
 Given the following text: "Lorem 69 ipsum dolor sit amet"
 
-Convert the "69" substring to int.
+Convert the "69" substring to int. The intereg is always located on the same position and always 2 digit long.
 
 The expected result is: 69
 
