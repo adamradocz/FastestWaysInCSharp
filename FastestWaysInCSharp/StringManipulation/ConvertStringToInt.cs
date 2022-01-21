@@ -30,7 +30,7 @@ public static class ConvertStringToInt
             char* str = v;
             while (*str != '\0')
             {
-                result = 10 * result + (*str - 48);
+                result = 10 * result + (*str - _numericAsciiOffset);
                 str++;
             }
         }

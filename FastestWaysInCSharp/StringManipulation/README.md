@@ -87,3 +87,29 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 |             IntParse | 13.418 ns | 0.2500 ns | 0.3505 ns |   1,358 B |         - |
 |       ConvertToInt32 | 13.498 ns | 0.2869 ns | 0.3415 ns |   1,351 B |         - |
 
+## Convert substring to int
+
+**Task:**
+
+Given the following text: "Lorem 69 ipsum dolor sit amet"
+
+Convert the "69" substring to int.
+
+The expected result is: 69
+
+``` ini
+
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1469 (21H2)
+Intel Core i7-10700 CPU 2.90GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK=6.0.200-preview.22055.15
+  [Host]     : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT  [AttachedDebugger]
+  DefaultJob : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
+
+
+```
+|                 Method |       Mean |     Error |    StdDev | Code Size |  Gen 0 | Allocated |
+|----------------------- |-----------:|----------:|----------:|----------:|-------:|----------:|
+| SpecificCustomIntParse |  0.6278 ns | 0.0005 ns | 0.0004 ns |      67 B |      - |         - |
+| SpanGenericCustomParse |  2.6415 ns | 0.0053 ns | 0.0044 ns |      91 B |      - |         - |
+|           SpanIntParse |  8.5258 ns | 0.0033 ns | 0.0029 ns |     139 B |      - |         - |
+|      SubstringIntParse | 15.2700 ns | 0.1730 ns | 0.1619 ns |     137 B | 0.0038 |      32 B |
