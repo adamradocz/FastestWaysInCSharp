@@ -12,46 +12,18 @@ public static class FilePipeReaderAndSpan
 
     private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id;Guid;Gender;GivenName;Surname;City;StreetAddress;EmailAddress;Birthday;Domain");
 
-    public static void ParseLine(ReadOnlySpan<byte> line)
-    {
-
-        if (line[0] == 'M' && line[1] == 'N' && line[2] == 'O')
-        {
-            // SKIP MNO
-            var delimiterAt = line.IndexOf(_delimiterAsByte);
-            line = line.Slice(delimiterAt + 1);
-
-            // Parse the line
-            delimiterAt = line.IndexOf(_delimiterAsByte);
-            Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int elementId, out _);
-            line = line.Slice(delimiterAt + 1);
-            delimiterAt = line.IndexOf(_delimiterAsByte);
-            Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int vehicleId, out _);
-            line = line.Slice(delimiterAt + 1);
-            delimiterAt = line.IndexOf(_delimiterAsByte);
-            Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int term, out _);
-            line = line.Slice(delimiterAt + 1);
-            delimiterAt = line.IndexOf(_delimiterAsByte);
-            Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int mileage, out _);
-            line = line.Slice(delimiterAt + 1);
-            delimiterAt = line.IndexOf(_delimiterAsByte);
-            Utf8Parser.TryParse(line.Slice(0, delimiterAt), out decimal value, out _);
-            var valueHolder = new ValueHolderAsStruct(elementId, vehicleId, term, mileage, value);
-        }
-    }
-
     private static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
     {
-        var reader = new FilePipeReader(filePath);
+        var filePipeReader = new FilePipeReader(filePath);
 
         while (true)
         {
-            var result = await reader.ReadAsync();
+            var result = await filePipeReader.ReadAsync();
             var buffer = result.Buffer;
 
             ParseLines(ref buffer);
 
-            reader.AdvanceTo(buffer.Start, buffer.End);
+            filePipeReader.AdvanceTo(buffer.Start, buffer.End);
 
             if (result.IsCompleted)
             {
@@ -59,10 +31,10 @@ public static class FilePipeReaderAndSpan
             }
         }
 
-        reader.Complete();
+        filePipeReader.Complete();
     }
 
-    private static void ParseLines(ref ReadOnlySequence<byte> buffer)
+    private static IEnumerable<FakeName> ParseLines(ref ReadOnlySequence<byte> buffer)
     {
         var reader = new BufferReader(buffer);
 
@@ -70,19 +42,22 @@ public static class FilePipeReaderAndSpan
         {
             var span = reader.UnreadSegment;
             int index = span.IndexOf(_newLineAsByte);
-            int length = 0;
+            int length;
 
             if (index != -1)
             {
                 length = index;
-                ParseLine(span.Slice(0, index));
+                var fakeName = GetFakeName(span.Slice(0, index));
+                if (fakeName != null)
+                {
+                    yield return fakeName;
+                }
             }
             else
             {
-                // We didn't find the new line in the current segment, see if it's 
-                // another segment
+                // We didn't find the new line in the current segment, see if it's another segment
                 var current = reader.Position;
-                var linePos = buffer.Slice(current).PositionOf(newLine);
+                var linePos = buffer.Slice(current).PositionOf(_newLineAsByte);
 
                 if (linePos == null)
                 {
@@ -92,7 +67,11 @@ public static class FilePipeReaderAndSpan
 
                 // We found one, so get the line and parse it
                 var line = buffer.Slice(current, linePos.Value);
-                ParseLine(lineParser, line);
+                var fakeName = ParseLine(line);
+                if (fakeName != null)
+                {
+                    yield return fakeName;
+                }
 
                 length = (int)line.Length;
             }
@@ -105,28 +84,107 @@ public static class FilePipeReaderAndSpan
         buffer = buffer.Slice(reader.Position);
     }
 
-    private static void ParseLine(in ReadOnlySequence<byte> line)
+    private static FakeName? ParseLine(in ReadOnlySequence<byte> line)
     {
+        FakeName? fakeName;
+
         // Lines are always small so we incur a small copy if we happen to cross a buffer boundary
         if (line.IsSingleSegment)
         {
-            ParseLine(line.First.Span);
+            fakeName = GetFakeName(line.First.Span);
         }
         else if (line.Length < 256)
         {
             // Small lines we copy to the stack
             Span<byte> stackLine = stackalloc byte[(int)line.Length];
             line.CopyTo(stackLine);
-            ParseLine(stackLine);
+            fakeName = GetFakeName(stackLine);
         }
         else
         {
             // Should be extremely rare
-            var length = (int)line.Length;
-            var buffer = ArrayPool<byte>.Shared.Rent(length);
+            int length = (int)line.Length;
+            byte[]? buffer = ArrayPool<byte>.Shared.Rent(length);
             line.CopyTo(buffer);
-            ParseLine(buffer.AsSpan(0, length));
+            fakeName = GetFakeName(buffer.AsSpan(0, length));
             ArrayPool<byte>.Shared.Return(buffer);
         }
+
+        return fakeName;
+    }
+
+    private static FakeName? GetFakeName(ReadOnlySpan<byte> line)
+    {
+        // Skip the header
+        if (line.IndexOf(_header) >= 0)
+        {
+            return default;
+        }
+
+        var fakeName = new FakeName();
+
+        // Id
+        int delimiterAt = line.IndexOf(_delimiterAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int id, out _);
+        fakeName.Id = id;
+        line = line.Slice(delimiterAt + 1);
+
+        // Guid
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out Guid guid, out _);
+        fakeName.Guid = guid;
+        line = line.Slice(delimiterAt + 1);
+
+        // Gender
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        fakeName.Gender = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
+        line = line.Slice(delimiterAt + 1);
+
+        // GivenName
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        fakeName.GivenName = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
+        line = line.Slice(delimiterAt + 1);
+
+        // Surname
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        fakeName.Surname = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
+        line = line.Slice(delimiterAt + 1);
+
+        // City
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        fakeName.City = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
+        line = line.Slice(delimiterAt + 1);
+
+        // StreetAddress
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        fakeName.StreetAddress = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
+        line = line.Slice(delimiterAt + 1);
+
+        // EmailAddress
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        fakeName.EmailAddress = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
+        line = line.Slice(delimiterAt + 1);
+
+        // Birthday
+        // Month
+        int slashAt = line.IndexOf(_forwardSlashAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, slashAt), out int month, out _);
+        line = line.Slice(slashAt + 1);
+
+        // Day
+        slashAt = line.IndexOf(_forwardSlashAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, slashAt), out int day, out _);
+        line = line.Slice(slashAt + 1);
+
+        // Year
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int year, out _);
+        fakeName.Birthday = new DateOnly(year, month, day);
+        line = line.Slice(delimiterAt + 1);
+
+        // Domain
+        fakeName.Domain = new string(Encoding.UTF8.GetString(line));
+
+        return fakeName;
     }
 }
