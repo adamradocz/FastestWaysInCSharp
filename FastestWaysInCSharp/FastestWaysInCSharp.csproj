@@ -9,12 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="FileProcessing\ParseCsv\FakeNamesLarge.csv">
+    <PackageReference Include="CsvHelper" Version="27.2.1" />
+    <PackageReference Include="System.IO.Pipelines" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="FileProcessing\ParseCsv\FakeNames.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="FileProcessing\ParseCsv\FakeNamesSmall.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ByteArrayManipulation\" />
   </ItemGroup>
 
 </Project>

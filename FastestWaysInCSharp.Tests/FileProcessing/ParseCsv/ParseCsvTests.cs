@@ -1,39 +1,86 @@
 using FastestWaysInCSharp.FileProcessing.ParseCsv;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.V2;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.V3;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.V5CsvHelper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace FastestWaysInCSharp.Tests.FileProcessing.ParseCsv.V1;
+namespace FastestWaysInCSharp.Tests.FileProcessing.ParseCsv;
 
 [TestClass]
 public class ParseCsvTests
 {
-    private readonly string _smallCsvFilePath;
+    private readonly string _filePath;
 
     public ParseCsvTests()
     {
-        _smallCsvFilePath = System.IO.Path.Combine("FileProcessing", "ParseCsv", "FakeNamesSmall.csv");
+        _filePath = System.IO.Path.Combine("FileProcessing", "ParseCsv", "FakeNamesSmall.csv");
     }
 
     [TestMethod]
-    public void V1_Parse100Lines_Get100Records() => TestParsedList(ReadLineSplit.Parse(_smallCsvFilePath));
+    public void V1StringArray_Parse100Lines_Gets100Records() => TestParsedList(StringArray.Parse(_filePath));
 
     [TestMethod]
-    public void V2_Parse100Lines_Get100Records() => TestParsedList(ReadLineSlice.Parse(_smallCsvFilePath));
+    public async Task V1StringArrayAsync_Parse100Lines_Gets100RecordsAsync() => await TestParsedListAsync(StringArray.ParseAsync(_filePath));
 
-    private static void TestParsedList(in List<FakeName> fakeNames)
+    [TestMethod]
+    public void V2Span_Parse100Lines_Gets100Records() => TestParsedList(Span.Parse(_filePath));
+
+    [TestMethod]
+    public async Task V2Span_Parse100Lines_Gets100RecordsAsync() => await TestParsedListAsync(Span.ParseAsync(_filePath));
+
+    [TestMethod]
+    public async Task V3PipelinesAndSpan_Parse100Lines_Gets100RecordsAsync() => await TestParsedListAsync(PipelinesAndSpan.ParseAsync(_filePath));
+
+    [TestMethod]
+    public void V5CsvHelper_Parse100Lines_Gets100Records() => TestParsedList(CsvHelperParser.Parse(_filePath));
+
+    private void TestParsedList(IEnumerable<FakeName> fakeNames)
     {
-        Assert.AreEqual(100, fakeNames.Count);
-        Assert.AreEqual(100, fakeNames[99].Id);
-        Assert.AreEqual(new Guid("5d1d0e33-71c6-49fe-9305-78ebc7300390"), fakeNames[99].Guid);
-        Assert.IsTrue(string.Equals("male", fakeNames[99].Gender));
-        Assert.IsTrue(string.Equals("Harrison", fakeNames[99].GivenName));
-        Assert.IsTrue(string.Equals("Lee", fakeNames[99].Surname));
-        Assert.IsTrue(string.Equals("WESTWELL", fakeNames[99].City));
-        Assert.IsTrue(string.Equals("33 Bouverie Road", fakeNames[99].StreetAddress));
-        Assert.IsTrue(string.Equals("HarrisonLee@armyspy.com", fakeNames[99].EmailAddress));
-        Assert.AreEqual(new DateOnly(1936, 5, 16), fakeNames[99].Birthday);
-        Assert.IsTrue(string.Equals("IndependentBookshop.co.uk", fakeNames[99].Domain));
+        int i = 0;
+        foreach (var fakeName in fakeNames)
+        {
+            if (i == 99)
+            {
+                Assert.AreEqual(100, fakeName.Id);
+                Assert.AreEqual(new Guid("5d1d0e33-71c6-49fe-9305-78ebc7300390"), fakeName.Guid);
+                Assert.IsTrue(string.Equals("male", fakeName.Gender));
+                Assert.IsTrue(string.Equals("Harrison", fakeName.GivenName));
+                Assert.IsTrue(string.Equals("Lee", fakeName.Surname));
+                Assert.IsTrue(string.Equals("WESTWELL", fakeName.City));
+                Assert.IsTrue(string.Equals("33 Bouverie Road", fakeName.StreetAddress));
+                Assert.IsTrue(string.Equals("HarrisonLee@armyspy.com", fakeName.EmailAddress));
+                Assert.AreEqual(new DateOnly(1936, 5, 16), fakeName.Birthday);
+                Assert.IsTrue(string.Equals("IndependentBookshop.co.uk", fakeName.Domain));
+            }
+
+            i++;
+        }
+    }
+
+    private async Task TestParsedListAsync(IAsyncEnumerable<FakeName> fakeNames)
+    {
+        int i = 0;
+        await foreach (var fakeName in fakeNames)
+        {
+            if (i == 99)
+            {
+                Assert.AreEqual(100, fakeName.Id);
+                Assert.AreEqual(new Guid("5d1d0e33-71c6-49fe-9305-78ebc7300390"), fakeName.Guid);
+                Assert.IsTrue(string.Equals("male", fakeName.Gender));
+                Assert.IsTrue(string.Equals("Harrison", fakeName.GivenName));
+                Assert.IsTrue(string.Equals("Lee", fakeName.Surname));
+                Assert.IsTrue(string.Equals("WESTWELL", fakeName.City));
+                Assert.IsTrue(string.Equals("33 Bouverie Road", fakeName.StreetAddress));
+                Assert.IsTrue(string.Equals("HarrisonLee@armyspy.com", fakeName.EmailAddress));
+                Assert.AreEqual(new DateOnly(1936, 5, 16), fakeName.Birthday);
+                Assert.IsTrue(string.Equals("IndependentBookshop.co.uk", fakeName.Domain));
+            }
+
+            i++;
+        }
     }
 }

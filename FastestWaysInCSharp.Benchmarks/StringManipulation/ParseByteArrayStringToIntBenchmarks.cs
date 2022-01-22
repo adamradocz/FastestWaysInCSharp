@@ -5,21 +5,17 @@ namespace FastestWaysInCSharp.Benchmarks.StringManipulation;
 
 [Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.FastestToSlowest)]
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
-public class ConvertStringToIntBenchmarks
+public class ParseByteArrayStringToIntBenchmarks
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Mimic a real-life situation, when the variable is changing.")]
-    private static string _numberAsString = "1234567890";
+    private static byte[] _stringAsByteArray = System.Text.Encoding.UTF8.GetBytes("1234567890");
 
     [Benchmark]
-    public int IntParse() => ConvertStringToInt.IntParse(_numberAsString);
+    public int GetStringIntParse() => ParseByteArrayStringToInt.GetStringIntParse(_stringAsByteArray);
 
     [Benchmark]
-    public int ConvertToInt32() => ConvertStringToInt.ConvertToInt32(_numberAsString);
+    public int Utf8ParserTryParse() => ParseByteArrayStringToInt.Utf8ParserTryParse(_stringAsByteArray);
 
     [Benchmark]
-    public int CustomIntParse() => ConvertStringToInt.CustomIntParse(_numberAsString);
-
-
-    [Benchmark]
-    public int CustomIntParseUnsafe() => ConvertStringToInt.CustomIntParseUnsafe(_numberAsString);
+    public int CustomIntParse() => ParseByteArrayStringToInt.CustomIntParse(_stringAsByteArray);
 }

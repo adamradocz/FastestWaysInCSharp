@@ -1,25 +1,70 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.V2;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.V3;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.V5CsvHelper;
 
 namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
 
 [Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.FastestToSlowest)]
+[GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory, BenchmarkLogicalGroupRule.ByParams)]
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
 public class ParseCsvBenchmarks
 {
-    [ParamsSource(nameof(ValuesForCsvFilePath))]
-    public string CsvFilePath { get; set; }
+    public string FilePath { get; set; } = Path.Combine("FileProcessing", "ParseCsv", "FakeNames.csv");
 
-    public static IEnumerable<string> ValuesForCsvFilePath => new[]
+    [BenchmarkCategory("Sync")]
+    [Benchmark]
+    public void V1StringArray()
     {
-        Path.Combine("FileProcessing", "ParseCsv", "FakeNamesSmall.csv"),
-        Path.Combine("FileProcessing", "ParseCsv", "FakeNamesLarge.csv")
-    };
+        foreach (var fakeName in StringArray.Parse(FilePath))
+        {            
+        }
+    }
 
+    [BenchmarkCategory("Async")]
     [Benchmark]
-    public void V1() => ReadLineSplit.Parse(CsvFilePath);
+    public async Task V1StringArrayAsync()
+    {
+        await foreach(var fakeName in StringArray.ParseAsync(FilePath))
+        {
+        }
+    }
 
-
+    [BenchmarkCategory("Sync")]
     [Benchmark]
-    public void V2() => ReadLineSlice.Parse(CsvFilePath);
+    public void V2Span()
+    {
+        foreach (var fakeName in Span.Parse(FilePath))
+        {
+        }
+    }
+
+    [BenchmarkCategory("Async")]
+    [Benchmark]
+    public async Task V2SpanAsnyc()
+    {
+        await foreach (var fakeName in Span.ParseAsync(FilePath))
+        {
+        }
+    }
+
+    [BenchmarkCategory("Async")]
+    [Benchmark]
+    public async Task V3PipelinesAndSpanAsnyc()
+    {
+        await foreach (var fakeName in PipelinesAndSpan.ParseAsync(FilePath))
+        {
+        }
+    }
+
+    [BenchmarkCategory("Sync")]
+    [Benchmark]
+    public void V5CsvHelper()
+    {
+        foreach (var fakeName in CsvHelperParser.Parse(FilePath))
+        {
+        }
+    }
 }
