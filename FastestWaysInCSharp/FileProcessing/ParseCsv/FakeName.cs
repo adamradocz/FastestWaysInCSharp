@@ -7,8 +7,6 @@ public class FakeName
     public string? Gender { get; set; }
     public string? GivenName { get; set; }
     public string? Surname { get; set; }
-    public string? City { get; set; }
-    public string? StreetAddress { get; set; }
     public string? EmailAddress { get; set; }
     public DateOnly Birthday { get; set; }
     public string? Domain { get; set; }

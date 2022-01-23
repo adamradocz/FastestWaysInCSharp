@@ -2,7 +2,7 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv.V2;
 
 public static class Span
 {
-    private const char _delimiter = ';';
+    private const char _delimiter = ',';
     private const char _forwardSlash = '/';
 
     public static IEnumerable<FakeName> Parse(string filePath)
@@ -67,16 +67,6 @@ public static class Span
         // Surname
         delimiterAt = line.IndexOf(_delimiter);
         fakeName.Surname = new string(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // City
-        delimiterAt = line.IndexOf(_delimiter);
-        fakeName.City = new string(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // StreetAddress
-        delimiterAt = line.IndexOf(_delimiter);
-        fakeName.StreetAddress = new string(line.Slice(0, delimiterAt));
         line = line.Slice(delimiterAt + 1);
 
         // EmailAddress

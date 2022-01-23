@@ -19,7 +19,7 @@ public class ParseCsvTests
 
     public ParseCsvTests()
     {
-        _filePath = System.IO.Path.Combine("FileProcessing", "ParseCsv", "FakeNamesSmall.csv");
+        _filePath = System.IO.Path.Combine("FileProcessing", "ParseCsv", "FakeNames.csv");
     }
 
     [TestMethod]
@@ -63,15 +63,14 @@ public class ParseCsvTests
 
     private void TestParsedList(List<FakeName> fakeNames)
     {
+        Assert.AreEqual(100000, fakeNames.Count);
         Assert.AreEqual(100, fakeNames[99].Id);
-        Assert.AreEqual(new Guid("5d1d0e33-71c6-49fe-9305-78ebc7300390"), fakeNames[99].Guid);
-        Assert.IsTrue(string.Equals("male", fakeNames[99].Gender));
-        Assert.IsTrue(string.Equals("Harrison", fakeNames[99].GivenName));
-        Assert.IsTrue(string.Equals("Lee", fakeNames[99].Surname));
-        Assert.IsTrue(string.Equals("WESTWELL", fakeNames[99].City));
-        Assert.IsTrue(string.Equals("33 Bouverie Road", fakeNames[99].StreetAddress));
-        Assert.IsTrue(string.Equals("HarrisonLee@armyspy.com", fakeNames[99].EmailAddress));
-        Assert.AreEqual(new DateOnly(1936, 5, 16), fakeNames[99].Birthday);
-        Assert.IsTrue(string.Equals("IndependentBookshop.co.uk", fakeNames[99].Domain));
+        Assert.AreEqual(new Guid("5bbecefd-95e6-416d-83f3-31ffcb9cdb9e"), fakeNames[99].Guid);
+        Assert.IsTrue(string.Equals("female", fakeNames[99].Gender));
+        Assert.IsTrue(string.Equals("Natasha", fakeNames[99].GivenName));
+        Assert.IsTrue(string.Equals("Wright", fakeNames[99].Surname));
+        Assert.IsTrue(string.Equals("NatashaWright@teleworm.us", fakeNames[99].EmailAddress));
+        Assert.AreEqual(new DateOnly(1939, 3, 16), fakeNames[99].Birthday);
+        Assert.IsTrue(string.Equals("ToledoTelevision.co.uk", fakeNames[99].Domain));
     }
 }

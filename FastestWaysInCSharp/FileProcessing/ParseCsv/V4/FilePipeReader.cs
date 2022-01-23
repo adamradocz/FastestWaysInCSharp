@@ -15,7 +15,7 @@ public class FilePipeReader : PipeReader
 
     public FilePipeReader(in string filePath, int bufferSize = 4096)
     {
-        _stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
+        _stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 1);
         _buffer = new byte[bufferSize];
     }
 

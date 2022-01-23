@@ -17,9 +17,6 @@
     <None Update="FileProcessing\ParseCsv\FakeNames.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FileProcessing\ParseCsv\FakeNamesSmall.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

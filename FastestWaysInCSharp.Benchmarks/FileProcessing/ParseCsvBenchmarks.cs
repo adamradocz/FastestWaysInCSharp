@@ -1,5 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
+using FastestWaysInCSharp.FileProcessing.ParseCsv;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V2;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V3;
@@ -19,8 +20,10 @@ public class ParseCsvBenchmarks
     [Benchmark]
     public void V1StringArray()
     {
+        var fakeNames = new List<FakeName>();
         foreach (var fakeName in StringArray.Parse(FilePath))
         {
+            fakeNames.Add(fakeName);
         }
     }
 
@@ -28,8 +31,10 @@ public class ParseCsvBenchmarks
     [Benchmark]
     public async Task V1StringArrayAsync()
     {
+        var fakeNames = new List<FakeName>();
         await foreach (var fakeName in StringArray.ParseAsync(FilePath))
         {
+            fakeNames.Add(fakeName);
         }
     }
 
@@ -37,8 +42,10 @@ public class ParseCsvBenchmarks
     [Benchmark]
     public void V2Span()
     {
+        var fakeNames = new List<FakeName>();
         foreach (var fakeName in Span.Parse(FilePath))
         {
+            fakeNames.Add(fakeName);
         }
     }
 
@@ -46,8 +53,10 @@ public class ParseCsvBenchmarks
     [Benchmark]
     public async Task V2SpanAsnyc()
     {
+        var fakeNames = new List<FakeName>();
         await foreach (var fakeName in Span.ParseAsync(FilePath))
         {
+            fakeNames.Add(fakeName);
         }
     }
 
@@ -63,8 +72,10 @@ public class ParseCsvBenchmarks
     [Benchmark]
     public void V5CsvHelper()
     {
+        var fakeNames = new List<FakeName>();
         foreach (var fakeName in CsvHelperParser.Parse(FilePath))
         {
+            fakeNames.Add(fakeName);
         }
     }
 }

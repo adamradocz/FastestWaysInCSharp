@@ -2,7 +2,7 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
 
 public static class StringArray
 {
-    private const char _delimiter = ';';
+    private const char _delimiter = ',';
 
     public static IEnumerable<FakeName> Parse(string filePath)
     {
@@ -48,11 +48,9 @@ public static class StringArray
             Gender = parts[2],
             GivenName = parts[3],
             Surname = parts[4],
-            City = parts[5],
-            StreetAddress = parts[6],
-            EmailAddress = parts[7],
-            Birthday = DateOnly.Parse(parts[8]),
-            Domain = parts[9]
+            EmailAddress = parts[5],
+            Birthday = DateOnly.Parse(parts[6]),
+            Domain = parts[7]
         };
     }
 }

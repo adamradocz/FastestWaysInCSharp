@@ -11,7 +11,7 @@ public static class CsvHelperParser
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = true,
-            Delimiter = ";",
+            Delimiter = ",",
             NewLine = Environment.NewLine
         };
 

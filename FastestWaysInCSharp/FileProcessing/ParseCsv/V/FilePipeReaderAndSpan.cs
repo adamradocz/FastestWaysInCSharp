@@ -11,7 +11,7 @@ public static class FilePipeReaderAndSpan
     private const byte _newLineAsByte = (byte)'\n';
     private const byte _forwardSlashAsByte = (byte)'/';
 
-    private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id;Guid;Gender;GivenName;Surname;City;StreetAddress;EmailAddress;Birthday;Domain");
+    private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id,Guid,Gender,GivenName,Surname,City,StreetAddress,EmailAddress,Birthday,Domain");
 
     public static async Task ParseAsync(string filePath)
     {
@@ -137,16 +137,6 @@ public static class FilePipeReaderAndSpan
         // Surname
         delimiterAt = line.IndexOf(_delimiterAsByte);
         fakeName.Surname = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // City
-        delimiterAt = line.IndexOf(_delimiterAsByte);
-        fakeName.City = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // StreetAddress
-        delimiterAt = line.IndexOf(_delimiterAsByte);
-        fakeName.StreetAddress = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
         line = line.Slice(delimiterAt + 1);
 
         // EmailAddress
