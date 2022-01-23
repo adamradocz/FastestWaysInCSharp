@@ -8,45 +8,48 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv.V3;
 public static class PipelinesAndSpan
 {
     private const byte _delimiterAsByte = (byte)';';
-    private const byte _newLineAsByte = (byte)'\n';
     private const byte _forwardSlashAsByte = (byte)'/';
 
+    private static readonly byte[] _newLineAsByte = Encoding.UTF8.GetBytes(Environment.NewLine);
     private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id;Guid;Gender;GivenName;Surname;City;StreetAddress;EmailAddress;Birthday;Domain");
     
-    public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
+    public static async Task<List<FakeName>> ParseAsync(string filePath)
     {
+        var fakeNames = new List<FakeName>();
+
         await using var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read);
         var reader = PipeReader.Create(fileStream);
         while (true)
         {
-            var data = await reader.ReadAsync();
-            var dataBuffer = data.Buffer;
+            var result = await reader.ReadAsync();
+            var buffer = result.Buffer;
 
             // Parse
-            var actualPosition = ParseLine(dataBuffer, out var fakeName);
-            if (fakeName != null)
-            {
-                yield return fakeName;
-            }
+            var actualPosition = ParseLine(buffer, fakeNames);
 
-            reader.AdvanceTo(actualPosition, dataBuffer.End);
+            reader.AdvanceTo(actualPosition, buffer.End);
 
-            if (data.IsCompleted)
+            if (result.IsCompleted)
             {
                 break;
             }
         }
 
         await reader.CompleteAsync();
+
+        return fakeNames;
     }
 
-    private static SequencePosition ParseLine(in ReadOnlySequence<byte> dataBuffer, out FakeName? fakeName)
+    private static SequencePosition ParseLine(in ReadOnlySequence<byte> buffer, in List<FakeName> fakeNames)
     {
-        fakeName = default;
-        var reader = new SequenceReader<byte>(dataBuffer);
+        var reader = new SequenceReader<byte>(buffer);
         while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
         {
-            fakeName = GetFakeName(line);
+            var fakeName = GetFakeName(line);
+            if (fakeName != null)
+            {
+                fakeNames.Add(fakeName);
+            }
         }
 
         return reader.Position;

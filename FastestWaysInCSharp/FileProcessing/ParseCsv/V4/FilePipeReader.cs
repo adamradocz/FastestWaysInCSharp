@@ -5,7 +5,7 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv.V4;
 
 // Source: https://github.com/indy-singh/StringsAreEvil/pull/1
 // Simple and incomplete implementation of a pipe reader over a file
-internal class FilePipeReader : PipeReader
+public class FilePipeReader : PipeReader
 {
     private readonly FileStream _stream;
     private int _unconsumedBytes;
@@ -13,13 +13,16 @@ internal class FilePipeReader : PipeReader
     private readonly byte[] _buffer;
     private ReadOnlySequence<byte> _currentSequence;
 
-    public FilePipeReader(string path, int bufferSize = 4096)
+    public FilePipeReader(in string filePath, int bufferSize = 4096)
     {
-        _stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 1);
+        _stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
         _buffer = new byte[bufferSize];
     }
 
-    public override void AdvanceTo(SequencePosition consumed) => AdvanceTo(consumed, consumed);
+    public override void AdvanceTo(SequencePosition consumed)
+    {
+        AdvanceTo(consumed, consumed);
+    }
 
     public override void AdvanceTo(SequencePosition consumed, SequencePosition examined)
     {
@@ -43,16 +46,25 @@ internal class FilePipeReader : PipeReader
         }
     }
 
-    public override void CancelPendingRead() => throw new NotImplementedException();
+    public override void CancelPendingRead()
+    {
+        throw new NotImplementedException();
+    }
 
-    public override void Complete(Exception exception = null) => _stream.Dispose();
+    public override void Complete(Exception exception = null)
+    {
+        _stream.Dispose();
+    }
 
-    public override void OnWriterCompleted(Action<Exception, object> callback, object state) => throw new NotImplementedException();
+    public override void OnWriterCompleted(Action<Exception, object> callback, object state)
+    {
+        throw new NotImplementedException();
+    }
 
     public override ValueTask<ReadResult> ReadAsync(CancellationToken cancellationToken = default)
     {
         // Blocking reads, because we're synchronous
-        int read = _stream.Read(_buffer, _unconsumedBytes, _buffer.Length - _unconsumedBytes);
+        var read = _stream.Read(_buffer, _unconsumedBytes, _buffer.Length - _unconsumedBytes);
 
         _currentSequence = new ReadOnlySequence<byte>(_buffer, 0, _unconsumedBytes + read);
 
@@ -61,5 +73,8 @@ internal class FilePipeReader : PipeReader
         return new ValueTask<ReadResult>(result);
     }
 
-    public override bool TryRead(out ReadResult result) => throw new NotImplementedException();
+    public override bool TryRead(out ReadResult result)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -3,6 +3,7 @@ using BenchmarkDotNet.Configs;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V2;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V3;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.V4;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.V5CsvHelper;
 
 namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
@@ -19,7 +20,7 @@ public class ParseCsvBenchmarks
     public void V1StringArray()
     {
         foreach (var fakeName in StringArray.Parse(FilePath))
-        {            
+        {
         }
     }
 
@@ -27,7 +28,7 @@ public class ParseCsvBenchmarks
     [Benchmark]
     public async Task V1StringArrayAsync()
     {
-        await foreach(var fakeName in StringArray.ParseAsync(FilePath))
+        await foreach (var fakeName in StringArray.ParseAsync(FilePath))
         {
         }
     }
@@ -52,12 +53,11 @@ public class ParseCsvBenchmarks
 
     [BenchmarkCategory("Async")]
     [Benchmark]
-    public async Task V3PipelinesAndSpanAsnyc()
-    {
-        await foreach (var fakeName in PipelinesAndSpan.ParseAsync(FilePath))
-        {
-        }
-    }
+    public async Task V3PipelinesAndSpanAsnyc() => _ = await PipelinesAndSpan.ParseAsync(FilePath);
+
+    [BenchmarkCategory("Async")]
+    [Benchmark]
+    public async Task V4FilePipeReaderAndSpanAsnyc() => _ = await FilePipeReaderAndSpan.ParseAsync(FilePath);
 
     [BenchmarkCategory("Sync")]
     [Benchmark]
