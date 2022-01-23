@@ -119,7 +119,7 @@ public static class FilePipeReaderAndSpan
         // Year
         delimiterAt = line.IndexOf(_delimiterAsByte);
         _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int year, out _);
-        fakeName.Birthday = new DateOnly(2000, 10, 10);
+        fakeName.Birthday = new DateOnly(year, month, day);
         line = line.Slice(delimiterAt + 1);
 
         // Domain
