@@ -65,12 +65,12 @@ public class ParseCsvTests
     {
         Assert.AreEqual(100000, fakeNames.Count);
         Assert.AreEqual(100, fakeNames[99].Id);
-        Assert.AreEqual(new Guid("5bbecefd-95e6-416d-83f3-31ffcb9cdb9e"), fakeNames[99].Guid);
+        Assert.AreEqual(new Guid("deaa74a3-3be9-4e74-8567-5be9356e80f3"), fakeNames[99].Guid);
         Assert.IsTrue(string.Equals("female", fakeNames[99].Gender));
-        Assert.IsTrue(string.Equals("Natasha", fakeNames[99].GivenName));
-        Assert.IsTrue(string.Equals("Wright", fakeNames[99].Surname));
-        Assert.IsTrue(string.Equals("NatashaWright@teleworm.us", fakeNames[99].EmailAddress));
-        Assert.AreEqual(new DateOnly(1939, 3, 16), fakeNames[99].Birthday);
-        Assert.IsTrue(string.Equals("ToledoTelevision.co.uk", fakeNames[99].Domain));
+        Assert.IsTrue(string.Equals("Daisy", fakeNames[99].GivenName));
+        Assert.IsTrue(string.Equals("Lynch", fakeNames[99].Surname));
+        Assert.IsTrue(string.Equals("DaisyLynch@cuvox.de", fakeNames[99].EmailAddress));
+        Assert.AreEqual(new DateOnly(1921, 3, 21), fakeNames[99].Birthday);
+        Assert.IsTrue(string.Equals("sweetinfamy.com", fakeNames[99].Domain));
     }
 }
