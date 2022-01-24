@@ -11,7 +11,7 @@ namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
 public class ParseCsvBenchmarks
 {
-    public string FilePath => Data.GetTestFilePath();
+    public static string FilePath => Data.GetTestFilePath();
 
     [Benchmark]
     [BenchmarkCategory("Sync")]
@@ -59,18 +59,18 @@ public class ParseCsvBenchmarks
 
     [Benchmark]
     [BenchmarkCategory("Async")]
-    public async Task PipelinesAndSpanAsnyc() => _ = await FastestWaysInCSharp.FileProcessing.ParseCsv.PipelinesAndSpan.ParseAsync(FilePath);
+    public async Task PipelinesAndSequenceReaderAsnyc() => _ = await PipelinesAndSequenceReader.ParseAsync(FilePath);
 
     [Benchmark]
     [BenchmarkCategory("Async")]
-    public async Task FilePipeReaderAndSequenceReaderAsync() => _ = await FilePipeReaderAndSequenceReader.ParseAsync(FilePath);
+    public async Task PipelinesAndBufferReaderAsync() => _ = await PipelinesAndBufferReader.ParseAsync(FilePath);
 
     [Benchmark]
     [BenchmarkCategory("Sync")]
     public void CsvHelper()
     {
         var fakeNames = new List<FakeName>();
-        foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.CsvHelperParser.Parse(FilePath))
+        foreach (var fakeName in CsvHelperParser.Parse(FilePath))
         {
             fakeNames.Add(fakeName);
         }

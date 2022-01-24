@@ -9,9 +9,9 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 public static class FilePipeReaderAndSequenceReader
 {
     private const byte _delimiterAsByte = (byte)';';
-    private const byte _forwardSlashAsByte = (byte)'/';
+    private const byte _newLineAsByte = (byte)'\n';
+    private const byte _forwardSlashAsByte = (byte)'/';    
 
-    private static readonly byte[] _newLineAsByte = Encoding.UTF8.GetBytes(Environment.NewLine);
     private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id;Guid;Gender;GivenName;Surname;City;StreetAddress;EmailAddress;Birthday;Height;Weight;CreditCardNumber;Domain");
 
     public static async Task<List<FakeName>> ParseAsync(string filePath)
@@ -24,9 +24,9 @@ public static class FilePipeReaderAndSequenceReader
             var result = await reader.ReadAsync();
             var buffer = result.Buffer;
 
-            var actualPosition = ParseLine(buffer, fakeNames);
+            ParseLine(ref buffer, fakeNames);
 
-            reader.AdvanceTo(actualPosition, buffer.End);
+            reader.AdvanceTo(buffer.Start, buffer.End);
 
             if (result.IsCompleted)
             {
@@ -35,11 +35,10 @@ public static class FilePipeReaderAndSequenceReader
         }
 
         reader.Complete();
-
         return fakeNames;
     }
 
-    private static SequencePosition ParseLine(in ReadOnlySequence<byte> buffer, in List<FakeName> fakeNames)
+    private static void ParseLine(ref ReadOnlySequence<byte> buffer, in List<FakeName> fakeNames)
     {
         var reader = new SequenceReader<byte>(buffer);
         while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
@@ -52,7 +51,7 @@ public static class FilePipeReaderAndSequenceReader
         }
 
         // Update the buffer
-        return reader.Position;
+        buffer = buffer.Slice(reader.Position);
     }
 
     private static FakeName? GetFakeName(ReadOnlySpan<byte> line)

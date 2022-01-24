@@ -1,6 +1,8 @@
 # Parse CSV
 
-##
+**Task:**
+
+Parse the `FakeNames.csv` file which contains 100K recors. The line ending is Unix styled "\n".
 
 ## Sources
 

@@ -6,12 +6,12 @@ using System.Text;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
-public static class PipelinesAndSpan
+public static class PipelinesAndSequenceReader
 {
     private const byte _delimiterAsByte = (byte)';';
+    private const byte _newLineAsByte = (byte)'\n';
     private const byte _forwardSlashAsByte = (byte)'/';
 
-    private static readonly byte[] _newLineAsByte = Encoding.UTF8.GetBytes(Environment.NewLine);
     private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id;Guid;Gender;GivenName;Surname;City;StreetAddress;EmailAddress;Birthday;Height;Weight;CreditCardNumber;Domain");
 
     public static async Task<List<FakeName>> ParseAsync(string filePath)

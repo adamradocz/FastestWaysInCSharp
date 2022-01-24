@@ -2,11 +2,12 @@ using FastestWaysInCSharp.FileProcessing.ParseCsv.Helpers;
 using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
 using System.Buffers;
 using System.Buffers.Text;
+using System.IO.Pipelines;
 using System.Text;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
-public static class FilePipeReaderAndBufferReader
+public static class PipelinesAndBufferReader
 {
     private const byte _delimiterAsByte = (byte)';';
     private const byte _newLineAsByte = (byte)'\n';
@@ -14,18 +15,20 @@ public static class FilePipeReaderAndBufferReader
 
     private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id;Guid;Gender;GivenName;Surname;City;StreetAddress;EmailAddress;Birthday;Height;Weight;CreditCardNumber;Domain");
 
-    public static async Task ParseAsync(string filePath)
+    public static async Task<List<FakeName>> ParseAsync(string filePath)
     {
-        var filePipeReader = new FilePipeReader(filePath);
+        var fakeNames = new List<FakeName>();
+        await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        var reader = PipeReader.Create(fileStream);
 
         while (true)
         {
-            var result = await filePipeReader.ReadAsync();
+            var result = await reader.ReadAsync();
             var buffer = result.Buffer;
 
-            ParseLines(ref buffer);
+            ParseLines(ref buffer, fakeNames);
 
-            filePipeReader.AdvanceTo(buffer.Start, buffer.End);
+            reader.AdvanceTo(buffer.Start, buffer.End);
 
             if (result.IsCompleted)
             {
@@ -33,10 +36,11 @@ public static class FilePipeReaderAndBufferReader
             }
         }
 
-        filePipeReader.Complete();
+        reader.Complete();
+        return fakeNames;
     }
 
-    private static void ParseLines(ref ReadOnlySequence<byte> buffer)
+    private static void ParseLines(ref ReadOnlySequence<byte> buffer, in List<FakeName> fakeNames)
     {
         var reader = new BufferReader(buffer);
 
@@ -49,7 +53,11 @@ public static class FilePipeReaderAndBufferReader
             if (index != -1)
             {
                 length = index;
-                GetFakeName(span.Slice(0, index));
+                var fakeName = GetFakeName(span.Slice(0, index));
+                if (fakeName != null)
+                {
+                    fakeNames.Add(fakeName);
+                }
             }
             else
             {
@@ -65,7 +73,11 @@ public static class FilePipeReaderAndBufferReader
 
                 // We found one, so get the line and parse it
                 var line = buffer.Slice(current, linePos.Value);
-                ParseLine(line);
+                var fakeName = ParseLine(line);
+                if (fakeName != null)
+                {
+                    fakeNames.Add(fakeName);
+                }
 
                 length = (int)line.Length;
             }
@@ -78,19 +90,21 @@ public static class FilePipeReaderAndBufferReader
         buffer = buffer.Slice(reader.Position);
     }
 
-    private static void ParseLine(in ReadOnlySequence<byte> line)
+    private static FakeName? ParseLine(in ReadOnlySequence<byte> line)
     {
+        FakeName? fakeName;
+
         // Lines are always small so we incur a small copy if we happen to cross a buffer boundary
         if (line.IsSingleSegment)
         {
-            GetFakeName(line.First.Span);
+            fakeName = GetFakeName(line.First.Span);
         }
         else if (line.Length < 256)
         {
             // Small lines we copy to the stack
             Span<byte> stackLine = stackalloc byte[(int)line.Length];
             line.CopyTo(stackLine);
-            GetFakeName(stackLine);
+            fakeName = GetFakeName(stackLine);
         }
         else
         {
@@ -98,17 +112,19 @@ public static class FilePipeReaderAndBufferReader
             int length = (int)line.Length;
             byte[]? buffer = ArrayPool<byte>.Shared.Rent(length);
             line.CopyTo(buffer);
-            GetFakeName(buffer.AsSpan(0, length));
+            fakeName = GetFakeName(buffer.AsSpan(0, length));
             ArrayPool<byte>.Shared.Return(buffer);
         }
+
+        return fakeName;
     }
 
-    private static void GetFakeName(ReadOnlySpan<byte> line)
+    private static FakeName? GetFakeName(ReadOnlySpan<byte> line)
     {
         // Skip the header
         if (line.IndexOf(_header) >= 0)
         {
-            return;
+            return default;
         }
 
         var fakeName = new FakeName();
@@ -191,6 +207,9 @@ public static class FilePipeReaderAndBufferReader
         line = line.Slice(delimiterAt + 1);
 
         // Domain
+        delimiterAt = line.IndexOf(_delimiterAsByte);
         fakeName.Domain = new string(Encoding.UTF8.GetString(line));
+
+        return fakeName;
     }
 }

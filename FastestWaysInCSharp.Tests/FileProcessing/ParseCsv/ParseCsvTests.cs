@@ -33,17 +33,17 @@ public class ParseCsvTests
     [TestMethod]
     public async Task Span_ParseAsync() => TestParsedList(await Span.ParseAsync(_filePath).ToListAsync());
 
-    // PipelinesAndSpan
+    // PipelinesAndSequenceReader
     [TestMethod]
-    public async Task PipelinesAndSpan_ParseAsync() => TestParsedList(await PipelinesAndSpan.ParseAsync(_filePath));
+    public async Task PipelinesAndSequenceReader_ParseAsync() => TestParsedList(await PipelinesAndSequenceReader.ParseAsync(_filePath));
 
     // FilePipeReaderAndSequenceReader
     [TestMethod]
     public async Task FilePipeReaderAndSequenceReader_ParseAsync() => TestParsedList(await FilePipeReaderAndSequenceReader.ParseAsync(_filePath));
 
-    // FilePipeReaderAndBufferReader
+    // PipelinesAndBufferReader
     [TestMethod]
-    public async Task FilePipeReaderAndBufferReader_ParseAsync() => await FilePipeReaderAndBufferReader.ParseAsync(_filePath);
+    public async Task PipelinesAndBufferReader_ParseAsync() => TestParsedList(await PipelinesAndBufferReader.ParseAsync(_filePath));
 
     // CsvHelper
     [TestMethod]
