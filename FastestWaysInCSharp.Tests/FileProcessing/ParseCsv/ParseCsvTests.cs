@@ -1,14 +1,11 @@
 using FastestWaysInCSharp.FileProcessing.ParseCsv;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V2;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V3;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V4;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V5CsvHelper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.Utilities;
 
 namespace FastestWaysInCSharp.Tests.FileProcessing.ParseCsv;
 
@@ -19,58 +16,57 @@ public class ParseCsvTests
 
     public ParseCsvTests()
     {
-        _filePath = System.IO.Path.Combine("FileProcessing", "ParseCsv", "FakeNames.csv");
+        _filePath = Data.GetTestFilePath();
     }
 
+    // StringArray
     [TestMethod]
-    public void V1StringArray_Parse100Lines_Gets100Records() => TestParsedList(StringArray.Parse(_filePath).ToList());
-
-    [TestMethod]
-    public async Task V1StringArrayAsync_Parse100Lines_Gets100RecordsAsync()
-    {
-        var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in StringArray.ParseAsync(_filePath))
-        {
-            fakeNames.Add(fakeName);
-        }
-
-        TestParsedList(fakeNames);
-    }
+    public void StringArray_Parse() => TestParsedList(StringArray.Parse(_filePath).ToList());
 
     [TestMethod]
-    public void V2Span_Parse100Lines_Gets100Records() => TestParsedList(Span.Parse(_filePath).ToList());
+    public async Task StringArray_ParseAsync() => TestParsedList(await StringArray.ParseAsync(_filePath).ToListAsync());
+
+    // Span
+    [TestMethod]
+    public void Span_Parse() => TestParsedList(Span.Parse(_filePath).ToList());
 
     [TestMethod]
-    public async Task V2Span_Parse100Lines_Gets100RecordsAsync()
-    {
-        var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in Span.ParseAsync(_filePath))
-        {
-            fakeNames.Add(fakeName);
-        }
+    public async Task Span_ParseAsync() => TestParsedList(await Span.ParseAsync(_filePath).ToListAsync());
 
-        TestParsedList(fakeNames);
-    }
+    // PipelinesAndSpan
+    [TestMethod]
+    public async Task PipelinesAndSpan_ParseAsync() => TestParsedList(await PipelinesAndSpan.ParseAsync(_filePath));
+
+    // FilePipeReaderAndSequenceReader
+    [TestMethod]
+    public async Task FilePipeReaderAndSequenceReader_ParseAsync() => TestParsedList(await FilePipeReaderAndSequenceReader.ParseAsync(_filePath));
+
+    // FilePipeReaderAndBufferReader
+    [TestMethod]
+    public async Task FilePipeReaderAndBufferReader_ParseAsync() => await FilePipeReaderAndBufferReader.ParseAsync(_filePath);
+
+    // CsvHelper
+    [TestMethod]
+    public void CsvHelper_Parse() => TestParsedList(CsvHelperParser.Parse(_filePath).ToList());
 
     [TestMethod]
-    public async Task V3PipelinesAndSpan_Parse100Lines_Gets100RecordsAsync() => TestParsedList(await PipelinesAndSpan.ParseAsync(_filePath));
-
-    [TestMethod]
-    public async Task V4FilePipeReaderAndSpan_Parse100Lines_Gets100RecordsAsync() => TestParsedList(await FilePipeReaderAndSpan.ParseAsync(_filePath));
-
-    [TestMethod]
-    public void V5CsvHelper_Parse100Lines_Gets100Records() => TestParsedList(CsvHelperParser.Parse(_filePath).ToList());
+    public async Task CsvHelper_ParseAsync() => TestParsedList(await CsvHelperParser.ParseAsync(_filePath).ToListAsync());
 
     private void TestParsedList(List<FakeName> fakeNames)
     {
         Assert.AreEqual(100000, fakeNames.Count);
         Assert.AreEqual(100, fakeNames[99].Id);
-        Assert.AreEqual(new Guid("deaa74a3-3be9-4e74-8567-5be9356e80f3"), fakeNames[99].Guid);
-        Assert.IsTrue(string.Equals("female", fakeNames[99].Gender));
-        Assert.IsTrue(string.Equals("Daisy", fakeNames[99].GivenName));
-        Assert.IsTrue(string.Equals("Lynch", fakeNames[99].Surname));
-        Assert.IsTrue(string.Equals("DaisyLynch@cuvox.de", fakeNames[99].EmailAddress));
-        Assert.AreEqual(new DateOnly(1921, 3, 21), fakeNames[99].Birthday);
-        Assert.IsTrue(string.Equals("sweetinfamy.com", fakeNames[99].Domain));
+        Assert.AreEqual(new Guid("becc7c8b-3176-4cb1-8105-2ee8bcf3ebd8"), fakeNames[99].Guid);
+        Assert.IsTrue(string.Equals("male", fakeNames[99].Gender));
+        Assert.IsTrue(string.Equals("Oscar", fakeNames[99].GivenName));
+        Assert.IsTrue(string.Equals("Pearson", fakeNames[99].Surname));
+        Assert.IsTrue(string.Equals("SUTTON ON SEA", fakeNames[99].City));
+        Assert.IsTrue(string.Equals("19 Mounthoolie Lane", fakeNames[99].StreetAddress));
+        Assert.IsTrue(string.Equals("OscarPearson@einrot.com", fakeNames[99].EmailAddress));
+        Assert.AreEqual(new DateOnly(1934, 3, 22), fakeNames[99].Birthday);
+        Assert.AreEqual(168, fakeNames[99].Height);
+        Assert.AreEqual(62.5f, fakeNames[99].Weight);
+        Assert.AreEqual(5346646292138171, fakeNames[99].CreditCardNumber);
+        Assert.IsTrue(string.Equals("IPODaily.co.uk", fakeNames[99].Domain));
     }
 }

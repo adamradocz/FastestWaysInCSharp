@@ -1,11 +1,8 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using FastestWaysInCSharp.FileProcessing.ParseCsv;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V1;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V2;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V3;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V4;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.V5CsvHelper;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
+using FastestWaysInCSharp.FileProcessing.ParseCsv.Utilities;
 
 namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
 
@@ -14,66 +11,77 @@ namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
 public class ParseCsvBenchmarks
 {
-    public string FilePath { get; set; } = Path.Combine("FileProcessing", "ParseCsv", "FakeNames.csv");
+    public string FilePath => Data.GetTestFilePath();
 
+    [Benchmark]
     [BenchmarkCategory("Sync")]
-    [Benchmark]
-    public void V1StringArray()
+    public void StringArray()
     {
         var fakeNames = new List<FakeName>();
-        foreach (var fakeName in StringArray.Parse(FilePath))
+        foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.StringArray.Parse(FilePath))
         {
             fakeNames.Add(fakeName);
         }
     }
 
+    [Benchmark]
     [BenchmarkCategory("Async")]
-    [Benchmark]
-    public async Task V1StringArrayAsync()
+    public async Task StringArrayAsync()
     {
         var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in StringArray.ParseAsync(FilePath))
+        await foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.StringArray.ParseAsync(FilePath))
         {
             fakeNames.Add(fakeName);
         }
     }
 
+    [Benchmark]
     [BenchmarkCategory("Sync")]
-    [Benchmark]
-    public void V2Span()
+    public void Span()
     {
         var fakeNames = new List<FakeName>();
-        foreach (var fakeName in Span.Parse(FilePath))
+        foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.Span.Parse(FilePath))
         {
             fakeNames.Add(fakeName);
         }
     }
 
-    [BenchmarkCategory("Async")]
     [Benchmark]
-    public async Task V2SpanAsnyc()
+    [BenchmarkCategory("Async")]
+    public async Task SpanAsnyc()
     {
         var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in Span.ParseAsync(FilePath))
+        await foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.Span.ParseAsync(FilePath))
         {
             fakeNames.Add(fakeName);
         }
     }
 
-    [BenchmarkCategory("Async")]
     [Benchmark]
-    public async Task V3PipelinesAndSpanAsnyc() => _ = await PipelinesAndSpan.ParseAsync(FilePath);
-
     [BenchmarkCategory("Async")]
-    [Benchmark]
-    public async Task V4FilePipeReaderAndSpanAsnyc() => _ = await FilePipeReaderAndSpan.ParseAsync(FilePath);
+    public async Task PipelinesAndSpanAsnyc() => _ = await FastestWaysInCSharp.FileProcessing.ParseCsv.PipelinesAndSpan.ParseAsync(FilePath);
 
+    [Benchmark]
+    [BenchmarkCategory("Async")]
+    public async Task FilePipeReaderAndSequenceReaderAsync() => _ = await FilePipeReaderAndSequenceReader.ParseAsync(FilePath);
+
+    [Benchmark]
     [BenchmarkCategory("Sync")]
-    [Benchmark]
-    public void V5CsvHelper()
+    public void CsvHelper()
     {
         var fakeNames = new List<FakeName>();
-        foreach (var fakeName in CsvHelperParser.Parse(FilePath))
+        foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.CsvHelperParser.Parse(FilePath))
+        {
+            fakeNames.Add(fakeName);
+        }
+    }
+
+    [Benchmark]
+    [BenchmarkCategory("Async")]
+    public async Task CsvHelperAsync()
+    {
+        var fakeNames = new List<FakeName>();
+        await foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.CsvHelperParser.ParseAsync(FilePath))
         {
             fakeNames.Add(fakeName);
         }
