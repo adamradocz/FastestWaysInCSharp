@@ -11,7 +11,7 @@ public static class CsvHelperParser
     {
         HasHeaderRecord = true,
         Delimiter = ";",
-        NewLine = "\n"
+        NewLine = "\r\n"
     };
 
     public static IEnumerable<FakeName> Parse(string filePath)

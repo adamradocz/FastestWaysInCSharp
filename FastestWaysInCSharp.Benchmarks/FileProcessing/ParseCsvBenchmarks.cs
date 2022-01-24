@@ -62,10 +62,6 @@ public class ParseCsvBenchmarks
     public async Task PipelinesAndSequenceReaderAsnyc() => _ = await PipelinesAndSequenceReader.ParseAsync(FilePath);
 
     [Benchmark]
-    [BenchmarkCategory("Async")]
-    public async Task PipelinesAndBufferReaderAsync() => _ = await PipelinesAndBufferReader.ParseAsync(FilePath);
-
-    [Benchmark]
     [BenchmarkCategory("Sync")]
     public void CsvHelper()
     {
@@ -89,7 +85,7 @@ public class ParseCsvBenchmarks
 
     [Benchmark]
     [BenchmarkCategory("Sync")]
-    public async Task SylvanDataCsv()
+    public void SylvanDataCsv()
     {
         var fakeNames = new List<FakeName>();
         foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.SylvanDataCsv.Parse(FilePath))
