@@ -18,7 +18,7 @@ public static class PipelinesAndBufferReader
     public static async Task<List<FakeName>> ParseAsync(string filePath)
     {
         var fakeNames = new List<FakeName>();
-        await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32768);
         var reader = PipeReader.Create(fileStream);
 
         while (true)

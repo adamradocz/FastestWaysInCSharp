@@ -52,6 +52,13 @@ public class ParseCsvTests
     [TestMethod]
     public async Task CsvHelper_ParseAsync() => TestParsedList(await CsvHelperParser.ParseAsync(_filePath).ToListAsync());
 
+    // SylvanDataCsv
+    [TestMethod]
+    public void CSylvanDataCsv_Parse() => TestParsedList(SylvanDataCsv.Parse(_filePath).ToList());
+
+    [TestMethod]
+    public async Task CSylvanDataCsv_ParseAsync() => TestParsedList(await SylvanDataCsv.ParseAsync(_filePath).ToListAsync());
+
     private void TestParsedList(List<FakeName> fakeNames)
     {
         Assert.AreEqual(100000, fakeNames.Count);
