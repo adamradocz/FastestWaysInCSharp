@@ -4,28 +4,25 @@ public static class ConvertStringToInt
 {
     private const int _numericAsciiOffset = 48;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Mimic a real-life situation, when the variable is changing.")]
-    private static string _textAsString = "1234567890";
+    public static int IntParse(in string integerAsString) => int.Parse(integerAsString);
 
-    public static int IntParse() => int.Parse(_textAsString);
+    public static int ConvertToInt32(in string integerAsString) => Convert.ToInt32(integerAsString);
 
-    public static int ConvertToInt32() => Convert.ToInt32(_textAsString);
-
-    public static int CustomIntParse()
+    public static int CustomIntParse(in string integerAsString)
     {
         int result = 0;
-        int stringLenght = _textAsString.Length;
+        int stringLenght = integerAsString.Length;
         for (int i = 0; i < stringLenght; i++)
         {
-            result = 10 * result + (_textAsString[i] - _numericAsciiOffset);
+            result = 10 * result + (integerAsString[i] - _numericAsciiOffset);
         }
         return result;
     }
 
-    public unsafe static int CustomIntParseUnsafe()
+    public unsafe static int CustomIntParseUnsafe(in string integerAsString)
     {
         int result = 0;
-        fixed (char* v = _textAsString)
+        fixed (char* v = integerAsString)
         {
             char* str = v;
             while (*str != '\0')

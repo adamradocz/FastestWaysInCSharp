@@ -7,16 +7,19 @@ namespace FastestWaysInCSharp.Benchmarks.StringManipulation;
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
 public class ConvertStringToIntBenchmarks
 {
-    [Benchmark]
-    public int IntParse() => ConvertStringToInt.IntParse();
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Mimic a real-life situation, when the variable is changing.")]
+    private static string _numberAsString = "1234567890";
 
     [Benchmark]
-    public int ConvertToInt32() => ConvertStringToInt.ConvertToInt32();
+    public int IntParse() => ConvertStringToInt.IntParse(_numberAsString);
 
     [Benchmark]
-    public int CustomIntParse() => ConvertStringToInt.CustomIntParse();
+    public int ConvertToInt32() => ConvertStringToInt.ConvertToInt32(_numberAsString);
+
+    [Benchmark]
+    public int CustomIntParse() => ConvertStringToInt.CustomIntParse(_numberAsString);
 
 
     [Benchmark]
-    public int CustomIntParseUnsafe() => ConvertStringToInt.CustomIntParseUnsafe();
+    public int CustomIntParseUnsafe() => ConvertStringToInt.CustomIntParseUnsafe(_numberAsString);
 }

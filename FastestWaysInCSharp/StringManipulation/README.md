@@ -64,11 +64,10 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 
 **Task:**
 
-Given the following text: "1234567890"
-
+Given a random positive integer in string format.
 Convert the text to int.
 
-The expected result is: 1234567890
+Benchmark: "1234567890" -> 1234567890
 
 ``` ini
 
@@ -93,7 +92,7 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 
 Given the following text: "Lorem 69 ipsum dolor sit amet"
 
-Convert the "69" substring to int.
+Convert the "69" substring to int. The intereg is always located on the same position and always 2 digit long.
 
 The expected result is: 69
 
@@ -113,3 +112,28 @@ Intel Core i7-10700 CPU 2.90GHz, 1 CPU, 16 logical and 8 physical cores
 | SpanGenericCustomParse |  2.6415 ns | 0.0053 ns | 0.0044 ns |      91 B |      - |         - |
 |           SpanIntParse |  8.5258 ns | 0.0033 ns | 0.0029 ns |     139 B |      - |         - |
 |      SubstringIntParse | 15.2700 ns | 0.1730 ns | 0.1619 ns |     137 B | 0.0038 |      32 B |
+
+## Parse byte array string to int
+
+**Task:**
+
+Given a random positive integer in string format, converted to byte array.
+Parse the byte array to int.
+
+Benchmark: System.Text.Encoding.UTF8.GetBytes("1234567890") -> 1234567890
+
+``` ini
+
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
+11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK=6.0.101
+  [Host]     : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT  [AttachedDebugger]
+  DefaultJob : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
+
+
+```
+|             Method |      Mean |     Error |    StdDev | Code Size |  Gen 0 | Allocated |
+|------------------- |----------:|----------:|----------:|----------:|-------:|----------:|
+|     CustomIntParse |  5.455 ns | 0.1001 ns | 0.0836 ns |     116 B |      - |         - |
+| Utf8ParserTryParse |  6.575 ns | 0.1494 ns | 0.1467 ns |     177 B |      - |         - |
+|  GetStringIntParse | 30.108 ns | 0.5848 ns | 0.6257 ns |     461 B | 0.0038 |      48 B |
