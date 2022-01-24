@@ -37,10 +37,6 @@ public class ParseCsvTests
     [TestMethod]
     public async Task PipelinesAndSequenceReader_ParseAsync() => TestParsedList(await PipelinesAndSequenceReader.ParseAsync(_filePath));
 
-    // FilePipeReaderAndSequenceReader
-    [TestMethod]
-    public async Task FilePipeReaderAndSequenceReader_ParseAsync() => TestParsedList(await FilePipeReaderAndSequenceReader.ParseAsync(_filePath));
-
     // PipelinesAndBufferReader
     [TestMethod]
     public async Task PipelinesAndBufferReader_ParseAsync() => TestParsedList(await PipelinesAndBufferReader.ParseAsync(_filePath));

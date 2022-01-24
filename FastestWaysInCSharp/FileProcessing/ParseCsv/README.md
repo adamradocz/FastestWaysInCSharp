@@ -16,17 +16,17 @@ Intel Core i7-10700 CPU 2.90GHz, 1 CPU, 16 logical and 8 physical cores
 ```
 |                          Method |     Mean |   Error |  StdDev |      Gen 0 | Code Size |     Gen 1 |     Gen 2 | Allocated |
 |-------------------------------- |---------:|--------:|--------:|-----------:|----------:|----------:|----------:|----------:|
-|                   SylvanDataCsv | 146.7 ms | 1.84 ms | 1.72 ms |  6500.0000 |      0 MB | 3750.0000 | 1250.0000 |     46 MB |
-|                            Span | 173.9 ms | 3.37 ms | 4.94 ms | 13000.0000 |      0 MB | 5000.0000 | 1666.6667 |     99 MB |
-|                     StringArray | 194.5 ms | 3.54 ms | 3.32 ms | 16666.6667 |      0 MB | 5333.3333 | 1333.3333 |    130 MB |
-|                       CsvHelper | 307.0 ms | 3.44 ms | 3.22 ms | 21000.0000 |      0 MB | 7000.0000 | 2000.0000 |    164 MB |
+|                   SylvanDataCsv | 144.6 ms | 2.04 ms | 1.81 ms |  6500.0000 |      0 MB | 3750.0000 | 1250.0000 |     46 MB |
+|                            Span | 172.3 ms | 3.42 ms | 5.90 ms | 13000.0000 |      0 MB | 5000.0000 | 1666.6667 |     99 MB |
+|                     StringArray | 192.8 ms | 3.73 ms | 4.58 ms | 16666.6667 |      0 MB | 5333.3333 | 1333.3333 |    130 MB |
+|                       CsvHelper | 300.4 ms | 5.90 ms | 6.79 ms | 21000.0000 |      0 MB | 7000.0000 | 2000.0000 |    164 MB |
 |                                 |          |         |         |            |           |           |           |           |
-|              SylvanDataCsvAsync | 170.2 ms | 3.14 ms | 3.62 ms |  6666.6667 |      0 MB | 3666.6667 | 1000.0000 |     47 MB |
-|   PipelinesAndBufferReaderAsync | 176.9 ms | 2.18 ms | 2.04 ms |  7333.3333 |      0 MB | 4000.0000 | 1333.3333 |     53 MB |
-| PipelinesAndSequenceReaderAsnyc | 177.3 ms | 2.29 ms | 2.15 ms |  7333.3333 |      0 MB | 4000.0000 | 1333.3333 |     54 MB |
-|                       SpanAsnyc | 199.0 ms | 3.84 ms | 3.21 ms | 13666.6667 |      0 MB | 5000.0000 | 1666.6667 |    107 MB |
-|                StringArrayAsync | 243.9 ms | 3.70 ms | 3.46 ms | 18000.0000 |      0 MB | 6000.0000 | 1666.6667 |    138 MB |
-|                  CsvHelperAsync | 369.5 ms | 7.23 ms | 8.04 ms | 21000.0000 |      0 MB | 7000.0000 | 2000.0000 |    166 MB |
+|   PipelinesAndBufferReaderAsync | 148.3 ms | 1.55 ms | 1.45 ms |  7250.0000 |      0 MB | 4000.0000 | 1250.0000 |     52 MB |
+| PipelinesAndSequenceReaderAsnyc | 148.9 ms | 2.92 ms | 2.73 ms |  7250.0000 |      0 MB | 4000.0000 | 1250.0000 |     53 MB |
+|              SylvanDataCsvAsync | 166.8 ms | 2.57 ms | 2.28 ms |  6333.3333 |      0 MB | 3666.6667 | 1000.0000 |     47 MB |
+|                       SpanAsnyc | 197.0 ms | 3.93 ms | 5.11 ms | 13666.6667 |      0 MB | 5000.0000 | 1666.6667 |    107 MB |
+|                StringArrayAsync | 231.3 ms | 2.54 ms | 2.12 ms | 18000.0000 |      0 MB | 6000.0000 | 2000.0000 |    138 MB |
+|                  CsvHelperAsync | 366.6 ms | 7.08 ms | 6.62 ms | 21000.0000 |      0 MB | 7000.0000 | 2000.0000 |    166 MB |
 
 ## Sources
 
