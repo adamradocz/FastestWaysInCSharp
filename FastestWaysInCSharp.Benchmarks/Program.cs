@@ -14,7 +14,10 @@ BenchmarkSwitcher benchmarkSwitcher = new(
 
         // FileProcessing
         typeof(ParseCsvBenchmarks),
-        typeof(ParseJsonBenchmarks)
+        typeof(SerializeJsonBenchmarks),
+
+        // Logging
+        typeof(ILoggerPerformanceBenchmarks)
     });
 
 benchmarkSwitcher.Run(args);

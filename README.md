@@ -11,3 +11,6 @@ The fastest way to do things in C#.
 - File processing
   - [Parse CSV](FastestWaysInCSharp/FileProcessing/ParseCsv/README.md)
   - [Serialize JSON](FastestWaysInCSharp/FileProcessing/SerializeJson/README.md)
+
+- Logging
+  - [ILogger Performance](FastestWaysInCSharp/Logging/README.md)
