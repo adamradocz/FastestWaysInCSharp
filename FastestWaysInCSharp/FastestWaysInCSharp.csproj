@@ -27,7 +27,7 @@
     <None Update="FileProcessing\ParseCsv\Data\FakeNames.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FileProcessing\ParseJson\Data\FakeNames.json">
+    <None Update="FileProcessing\SerializeJson\Data\FakeNames.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -13,14 +13,41 @@ public class ParseJsonBenchmarks
 {
     public static string FilePath => Data.GetJsonTestFilePath();
 
+    private List<FakeName> _fakeNames;
+
+    [GlobalSetup]
+    public async Task GlobalSetupAsync()
+    {
+        _fakeNames = await SystemTextJsonSourceGenerated.DeserializeAsync(FilePath);
+    }
+
     [Benchmark]
-    [BenchmarkCategory("Async")]
-    public async Task SystemTextJsonAsync()
+    [BenchmarkCategory("Deserialize")]
+    public async Task SystemTextJsonDeserializeAsync()
     {
         var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in SystemTextJson.ParseAsync(FilePath))
+        await foreach (var fakeName in SystemTextJson.DeserializeAsyncEnumerable(FilePath))
         {
             fakeNames.Add(fakeName);
         }
     }
+
+    [Benchmark]
+    [BenchmarkCategory("Deserialize")]
+    public async Task SystemTextJsonSrcGenDeserializeAsync()
+    {
+        var fakeNames = new List<FakeName>();
+        await foreach (var fakeName in SystemTextJsonSourceGenerated.DeserializeAsyncEnumerable(FilePath))
+        {
+            fakeNames.Add(fakeName);
+        }
+    }
+
+    [Benchmark]
+    [BenchmarkCategory("Serialize")]
+    public string SystemTextJsonSerialize() => SystemTextJson.Serialize(_fakeNames);
+
+    [Benchmark]
+    [BenchmarkCategory("Serialize")]
+    public string SystemTextJsonSrcGenSerialize() => SystemTextJsonSourceGenerated.Serialize(_fakeNames);
 }

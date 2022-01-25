@@ -10,21 +10,21 @@ using FastestWaysInCSharp.FileProcessing.Utilities;
 namespace FastestWaysInCSharp.Tests.FileProcessing.ParseCsv;
 
 [TestClass]
-public class ParseJsonTests
+public class SerializeJsonTests
 {
     private readonly string _filePath;
 
-    public ParseJsonTests()
+    public SerializeJsonTests()
     {
         _filePath = Data.GetJsonTestFilePath();
     }
 
     // SystemTextJson
     [TestMethod]
-    public void StringArray_Parse() => TestParsedList(NewtonsoftJson.Parse(_filePath));
-
+    public async Task SystemTextJson_DeserializeAsync() => TestParsedList(await SystemTextJson.DeserializeAsync(_filePath));
+        
     [TestMethod]
-    public async Task StringArray_ParseAsync() => TestParsedList(await SystemTextJson.ParseAsync(_filePath).ToListAsync());
+    public async Task SystemTextJsonSourceGenerated_DeserializeAsync() => TestParsedList(await SystemTextJsonSourceGenerated.DeserializeAsync(_filePath));
 
     private void TestParsedList(List<FakeName> fakeNames)
     {
