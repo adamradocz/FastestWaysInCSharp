@@ -9,7 +9,7 @@ namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
 [Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.FastestToSlowest)]
 [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory, BenchmarkLogicalGroupRule.ByParams)]
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
-public class ParseJsonBenchmarks
+public class SerializeJsonBenchmarks
 {
     public static string FilePath => Data.GetJsonTestFilePath();
 
