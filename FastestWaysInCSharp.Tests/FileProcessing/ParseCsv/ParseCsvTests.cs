@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.Utilities;
+using FastestWaysInCSharp.FileProcessing.Model;
+using FastestWaysInCSharp.FileProcessing.Utilities;
 
 namespace FastestWaysInCSharp.Tests.FileProcessing.ParseCsv;
 
@@ -16,7 +16,7 @@ public class ParseCsvTests
 
     public ParseCsvTests()
     {
-        _filePath = Data.GetTestFilePath();
+        _filePath = Data.GetCsvTestFilePath();
     }
 
     // StringArray

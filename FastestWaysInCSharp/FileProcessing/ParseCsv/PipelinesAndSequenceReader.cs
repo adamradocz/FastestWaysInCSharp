@@ -1,4 +1,4 @@
-using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
+using FastestWaysInCSharp.FileProcessing.Model;
 using System.Buffers;
 using System.Buffers.Text;
 using System.IO.Pipelines;

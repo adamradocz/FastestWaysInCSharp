@@ -1,8 +1,8 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
+using FastestWaysInCSharp.FileProcessing.Model;
 using FastestWaysInCSharp.FileProcessing.ParseCsv;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.Utilities;
+using FastestWaysInCSharp.FileProcessing.Utilities;
 
 namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
 
@@ -11,7 +11,7 @@ namespace FastestWaysInCSharp.Benchmarks.FileProcessing;
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
 public class ParseCsvBenchmarks
 {
-    public static string FilePath => Data.GetTestFilePath();
+    public static string FilePath => Data.GetCsvTestFilePath();
 
     [Benchmark]
     [BenchmarkCategory("Sync")]

@@ -1,4 +1,4 @@
-using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
+using FastestWaysInCSharp.FileProcessing.Model;
 using Sylvan.Data.Csv;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;

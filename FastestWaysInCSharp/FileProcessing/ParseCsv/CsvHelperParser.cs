@@ -1,6 +1,6 @@
 using CsvHelper;
 using CsvHelper.Configuration;
-using FastestWaysInCSharp.FileProcessing.ParseCsv.Model;
+using FastestWaysInCSharp.FileProcessing.Model;
 using System.Globalization;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;

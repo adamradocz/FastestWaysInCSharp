@@ -13,7 +13,8 @@ BenchmarkSwitcher benchmarkSwitcher = new(
         typeof(ParseByteArrayStringToIntBenchmarks),
 
         // FileProcessing
-        typeof(ParseCsvBenchmarks)
+        typeof(ParseCsvBenchmarks),
+        typeof(ParseJsonBenchmarks)
     });
 
 benchmarkSwitcher.Run(args);
