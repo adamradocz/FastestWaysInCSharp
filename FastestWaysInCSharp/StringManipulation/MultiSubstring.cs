@@ -184,4 +184,17 @@ public static class MultiSubstring
             buffer[0] = value[0];            
         });
     }
+
+    public static string Zstring()
+    {
+        var textAsSpan = _text.AsSpan();
+
+        using var sb = Cysharp.Text.ZString.CreateStringBuilder();
+        sb.Append(textAsSpan.Slice(0, 5));
+        sb.Append(textAsSpan.Slice(28, 11));
+        sb.Append(textAsSpan.Slice(116, 6));
+
+        // and build final string
+        return sb.ToString();
+    }
 }

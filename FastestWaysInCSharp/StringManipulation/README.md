@@ -23,16 +23,16 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 
 
 ```
-|                      Method |     Mean |    Error |   StdDev | Code Size |  Gen 0 | Allocated |
-|---------------------------- |---------:|---------:|---------:|----------:|-------:|----------:|
-|         StringCreateReverse | 10.66 ns | 0.139 ns | 0.123 ns |     146 B | 0.0057 |      72 B |
-|                StringCreate | 12.05 ns | 0.222 ns | 0.207 ns |     146 B | 0.0057 |      72 B |
-|         StringCreateClosure | 15.44 ns | 0.241 ns | 0.202 ns |     146 B | 0.0057 |      72 B |
-|         CharArrayStackAlloc | 17.20 ns | 0.394 ns | 0.840 ns |     808 B | 0.0057 |      72 B |
-|                   CharArray | 18.90 ns | 0.411 ns | 0.422 ns |     735 B | 0.0115 |     144 B |
-| CharArrayStackAllocToString | 21.97 ns | 0.326 ns | 0.289 ns |   1,109 B | 0.0057 |      72 B |
-|                   Substring | 41.08 ns | 0.630 ns | 0.558 ns |     133 B | 0.0197 |     248 B |
-
+|                      Method |     Mean |    Error |   StdDev |  Gen 0 | Code Size | Allocated |
+|---------------------------- |---------:|---------:|---------:|-------:|----------:|----------:|
+|         StringCreateReverse | 10.36 ns | 0.159 ns | 0.149 ns | 0.0057 |     146 B |      72 B |
+|                StringCreate | 12.29 ns | 0.214 ns | 0.201 ns | 0.0057 |     146 B |      72 B |
+|         StringCreateClosure | 15.19 ns | 0.347 ns | 0.426 ns | 0.0057 |     146 B |      72 B |
+|         CharArrayStackAlloc | 15.84 ns | 0.355 ns | 0.314 ns | 0.0057 |     808 B |      72 B |
+|                   CharArray | 18.58 ns | 0.402 ns | 0.430 ns | 0.0115 |     735 B |     144 B |
+| CharArrayStackAllocToString | 21.64 ns | 0.485 ns | 0.769 ns | 0.0057 |   1,109 B |      72 B |
+|                     Zstring | 31.89 ns | 0.425 ns | 0.398 ns | 0.0057 |     774 B |      72 B |
+|                   Substring | 40.84 ns | 0.459 ns | 0.383 ns | 0.0197 |     133 B |     248 B |
 
 ## Character replace
 

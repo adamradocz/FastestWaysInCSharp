@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
     <PackageReference Include="Sylvan.Data.Csv" Version="1.1.11" />
     <PackageReference Include="System.IO.Pipelines" Version="6.0.1" />
+    <PackageReference Include="ZString" Version="2.4.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -28,4 +28,7 @@ public class MultiSubstringTests
 
     [TestMethod]
     public void StringCreateReverse() => Assert.AreEqual(_expectedText, MultiSubstring.StringCreateReverse());
+
+    [TestMethod]
+    public void Zstring() => Assert.AreEqual(_expectedText, MultiSubstring.Zstring());
 }

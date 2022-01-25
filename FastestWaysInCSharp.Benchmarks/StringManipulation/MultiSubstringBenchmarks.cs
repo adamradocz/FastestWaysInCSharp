@@ -27,4 +27,7 @@ public class MultiSubstringBenchmarks
 
     [Benchmark]
     public string StringCreateReverse() => MultiSubstring.StringCreateReverse();
+
+    [Benchmark]
+    public string Zstring() => MultiSubstring.Zstring();
 }
