@@ -7,6 +7,7 @@ The fastest way to do things in C#.
   - [Multi substring](FastestWaysInCSharp/StringManipulation/README.md#multi-substring)
   - [Character replace](FastestWaysInCSharp/StringManipulation/README.md#character-replace)
   - [Convert string to int](FastestWaysInCSharp/StringManipulation/README.md#convert-string-to-int)
+  - [Convert substring to int](FastestWaysInCSharp/StringManipulation/README.md#convert-substring-to-int)
   - [Parse byte array string to int](FastestWaysInCSharp/StringManipulation/README.md#parse-byte-array-string-to-int)
 
 - File processing
