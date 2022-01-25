@@ -38,7 +38,7 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 
 **Task:**
 
-Given the following text: "Lorem ipsum dolor sit amet."
+Given the following text: "Lorem ipsum dolor sit amet"
 
 Replace the 2nd character with a '#'.
 
