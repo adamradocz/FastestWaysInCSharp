@@ -1,5 +1,5 @@
 # Fatest ways in C#
-The fastest way to do things in C#.
+The fastest ways to do things in C#.
 
 ## Table of content
 
