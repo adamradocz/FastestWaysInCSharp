@@ -96,9 +96,8 @@ public static class MultiSubstring
         return buffer.ToString();
     }
 
-    public static string StringCreate()
-    {
-        return string.Create(22, _text, (buffer, value) =>
+    public static string StringCreate() =>
+        string.Create(22, _text, (buffer, value) =>
         {
             buffer[0] = value[0];
             buffer[1] = value[1];
@@ -123,12 +122,10 @@ public static class MultiSubstring
             buffer[20] = value[120];
             buffer[21] = value[121];
         });
-    }
 
     // Bad code. It's not cacheable.
-    public static string StringCreateClosure()
-    {
-        return string.Create(22, _text, (buffer, value) =>
+    public static string StringCreateClosure() =>
+        string.Create(22, _text, (buffer, value) =>
         {
             buffer[0] = _text[0];
             buffer[1] = _text[1];
@@ -153,12 +150,10 @@ public static class MultiSubstring
             buffer[20] = _text[120];
             buffer[21] = _text[121];
         });
-    }
 
     // Reversing the assignation order allows the JIT to not add bounds checks.
-    public static string StringCreateReverse()
-    {
-        return string.Create(22, _text, (buffer, value) =>
+    public static string StringCreateReverse() =>
+        string.Create(22, _text, (buffer, value) =>
         {
             buffer[21] = value[121];
             buffer[20] = value[120];
@@ -183,7 +178,6 @@ public static class MultiSubstring
             buffer[1] = value[1];
             buffer[0] = value[0];            
         });
-    }
 
     public static string Zstring()
     {

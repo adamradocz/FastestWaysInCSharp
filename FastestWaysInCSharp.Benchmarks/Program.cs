@@ -11,6 +11,7 @@ BenchmarkSwitcher benchmarkSwitcher = new(
         typeof(ConvertStringToIntBenchmarks),
         typeof(ConvertSubstringToIntBenchmarks),
         typeof(ParseByteArrayStringToIntBenchmarks),
+        typeof(StringConcatenationBenchmarks),
 
         // FileProcessing
         typeof(ParseCsvBenchmarks),

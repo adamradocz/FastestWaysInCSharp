@@ -137,3 +137,29 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 |     CustomIntParse |  5.455 ns | 0.1001 ns | 0.0836 ns |     116 B |      - |         - |
 | Utf8ParserTryParse |  6.575 ns | 0.1494 ns | 0.1467 ns |     177 B |      - |         - |
 |  GetStringIntParse | 30.108 ns | 0.5848 ns | 0.6257 ns |     461 B | 0.0038 |      48 B |
+
+## String Concatenation
+
+**Task:**
+
+Create the following string: "Hello world at {date}.{Environment.NewLine}I'm {firstName} {lastName} and my favorite number is {number}."
+
+``` ini
+
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1469 (21H2)
+Intel Core i7-10700 CPU 2.90GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK=6.0.101
+  [Host]     : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT  [AttachedDebugger]
+  DefaultJob : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
+
+
+```
+|            Method |     Mean |   Error |  StdDev | Code Size |  Gen 0 | Allocated |
+|------------------ |---------:|--------:|--------:|----------:|-------:|----------:|
+| StringBuilderPool | 201.8 ns | 0.72 ns | 0.67 ns |     472 B | 0.0286 |     240 B |
+|     Interpolation | 202.9 ns | 0.52 ns | 0.48 ns |   1,108 B | 0.0200 |     168 B |
+|           Zstring | 210.2 ns | 0.70 ns | 0.54 ns |   2,143 B | 0.0286 |     240 B |
+|      PlusOperator | 227.8 ns | 0.85 ns | 0.79 ns |     323 B | 0.0429 |     360 B |
+|     StringBuilder | 276.1 ns | 1.99 ns | 1.56 ns |     439 B | 0.0935 |     784 B |
+|      StringConcat | 286.5 ns | 1.86 ns | 1.74 ns |     372 B | 0.0792 |     664 B |
+|      StringFormat | 327.8 ns | 0.66 ns | 0.62 ns |     220 B | 0.0334 |     280 B |

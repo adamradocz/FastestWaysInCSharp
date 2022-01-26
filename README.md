@@ -9,6 +9,7 @@ The fastest way to do things in C#.
   - [Convert string to int](FastestWaysInCSharp/StringManipulation/README.md#convert-string-to-int)
   - [Convert substring to int](FastestWaysInCSharp/StringManipulation/README.md#convert-substring-to-int)
   - [Parse byte array string to int](FastestWaysInCSharp/StringManipulation/README.md#parse-byte-array-string-to-int)
+  - [String Concatenation](FastestWaysInCSharp/StringManipulation/README.md#string-concatenation)
 
 - File processing
   - [Parse CSV](FastestWaysInCSharp/FileProcessing/ParseCsv/README.md)
