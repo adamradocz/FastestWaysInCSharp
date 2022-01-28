@@ -14,66 +14,29 @@ public class ParseCsvBenchmarks
     public static string FilePath => Data.GetCsvTestFilePath();
 
     [Benchmark]
-    [BenchmarkCategory("Sync")]
-    public void StringArray()
-    {
-        var fakeNames = new List<FakeName>();
-        foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.StringArray.Parse(FilePath))
-        {
-            fakeNames.Add(fakeName);
-        }
-    }
-
-    [Benchmark]
-    [BenchmarkCategory("Async")]
     public async Task StringArrayAsync()
     {
         var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.StringArray.ParseAsync(FilePath))
+        await foreach (var fakeName in StringArray.ParseAsync(FilePath))
         {
             fakeNames.Add(fakeName);
         }
     }
 
     [Benchmark]
-    [BenchmarkCategory("Sync")]
-    public void Span()
-    {
-        var fakeNames = new List<FakeName>();
-        foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.Span.Parse(FilePath))
-        {
-            fakeNames.Add(fakeName);
-        }
-    }
-
-    [Benchmark]
-    [BenchmarkCategory("Async")]
     public async Task SpanAsnyc()
     {
         var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.Span.ParseAsync(FilePath))
+        await foreach (var fakeName in Span.ParseAsync(FilePath))
         {
             fakeNames.Add(fakeName);
         }
     }
 
     [Benchmark]
-    [BenchmarkCategory("Async")]
     public async Task PipelinesAndSequenceReaderAsnyc() => _ = await PipelinesAndSequenceReader.ParseAsync(FilePath);
 
     [Benchmark]
-    [BenchmarkCategory("Sync")]
-    public void CsvHelper()
-    {
-        var fakeNames = new List<FakeName>();
-        foreach (var fakeName in CsvHelperParser.Parse(FilePath))
-        {
-            fakeNames.Add(fakeName);
-        }
-    }
-
-    [Benchmark]
-    [BenchmarkCategory("Async")]
     public async Task CsvHelperAsync()
     {
         var fakeNames = new List<FakeName>();
@@ -84,22 +47,10 @@ public class ParseCsvBenchmarks
     }
 
     [Benchmark]
-    [BenchmarkCategory("Sync")]
-    public void SylvanDataCsv()
-    {
-        var fakeNames = new List<FakeName>();
-        foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.SylvanDataCsv.Parse(FilePath))
-        {
-            fakeNames.Add(fakeName);
-        }
-    }
-
-    [Benchmark]
-    [BenchmarkCategory("Async")]
     public async Task SylvanDataCsvAsync()
     {
         var fakeNames = new List<FakeName>();
-        await foreach (var fakeName in FastestWaysInCSharp.FileProcessing.ParseCsv.SylvanDataCsv.ParseAsync(FilePath))
+        await foreach (var fakeName in SylvanDataCsv.ParseAsync(FilePath))
         {
             fakeNames.Add(fakeName);
         }

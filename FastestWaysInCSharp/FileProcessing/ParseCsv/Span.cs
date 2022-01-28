@@ -8,23 +8,6 @@ public static class Span
     private const char _delimiter = ';';
     private const char _forwardSlash = '/';
 
-    public static IEnumerable<FakeName> Parse(string filePath)
-    {
-        using var reader = new StreamReader(filePath);
-
-        // Skip the header
-        _ = reader.ReadLine();
-
-        while (!reader.EndOfStream)
-        {
-            string? line = reader.ReadLine();
-            if (!string.IsNullOrEmpty(line))
-            {
-                yield return ParseLine(line);
-            }
-        }
-    }
-
     public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
     {
         using var reader = new StreamReader(filePath);

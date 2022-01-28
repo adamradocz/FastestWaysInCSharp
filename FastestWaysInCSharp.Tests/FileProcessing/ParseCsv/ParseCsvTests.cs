@@ -19,39 +19,22 @@ public class ParseCsvTests
         _filePath = Data.GetCsvTestFilePath();
     }
 
-    // StringArray
-    [TestMethod]
-    public void StringArray_Parse() => TestParsedList(StringArray.Parse(_filePath).ToList());
-
     [TestMethod]
     public async Task StringArray_ParseAsync() => TestParsedList(await StringArray.ParseAsync(_filePath).ToListAsync());
-
-    // Span
-    [TestMethod]
-    public void Span_Parse() => TestParsedList(Span.Parse(_filePath).ToList());
 
     [TestMethod]
     public async Task Span_ParseAsync() => TestParsedList(await Span.ParseAsync(_filePath).ToListAsync());
 
-    // PipelinesAndSequenceReader
     [TestMethod]
     public async Task PipelinesAndSequenceReader_ParseAsync() => TestParsedList(await PipelinesAndSequenceReader.ParseAsync(_filePath));
-
-    // CsvHelper
-    [TestMethod]
-    public void CsvHelper_Parse() => TestParsedList(CsvHelperParser.Parse(_filePath).ToList());
 
     [TestMethod]
     public async Task CsvHelper_ParseAsync() => TestParsedList(await CsvHelperParser.ParseAsync(_filePath).ToListAsync());
 
-    // SylvanDataCsv
-    [TestMethod]
-    public void CSylvanDataCsv_Parse() => TestParsedList(SylvanDataCsv.Parse(_filePath).ToList());
-
     [TestMethod]
     public async Task CSylvanDataCsv_ParseAsync() => TestParsedList(await SylvanDataCsv.ParseAsync(_filePath).ToListAsync());
 
-    private void TestParsedList(List<FakeName> fakeNames)
+    private static void TestParsedList(in List<FakeName> fakeNames)
     {
         Assert.AreEqual(100000, fakeNames.Count);
         Assert.AreEqual(100, fakeNames[99].Id);

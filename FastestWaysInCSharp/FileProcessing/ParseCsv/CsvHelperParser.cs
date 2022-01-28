@@ -14,16 +14,6 @@ public static class CsvHelperParser
         NewLine = "\r\n"
     };
 
-    public static IEnumerable<FakeName> Parse(string filePath)
-    {
-        using var streamReader = new StreamReader(filePath);
-        using var csvReader = new CsvReader(streamReader, _csvConfiguration);
-        foreach (var fakeName in csvReader.GetRecords<FakeName>())
-        {
-            yield return fakeName;
-        }
-    }
-
     public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
     {
         using var streamReader = new StreamReader(filePath);

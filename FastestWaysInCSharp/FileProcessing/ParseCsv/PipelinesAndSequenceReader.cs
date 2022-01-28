@@ -45,7 +45,7 @@ public static class PipelinesAndSequenceReader
         var reader = new SequenceReader<byte>(buffer);
         while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
         {
-            var fakeName = GetFakeName(line);
+            var fakeName = GetFakeName(ref line);
             if (fakeName != null)
             {
                 fakeNames.Add(fakeName);
@@ -55,7 +55,7 @@ public static class PipelinesAndSequenceReader
         return reader.Position;
     }
 
-    private static FakeName? GetFakeName(ReadOnlySpan<byte> line)
+    private static FakeName? GetFakeName(ref ReadOnlySpan<byte> line)
     {
         // Skip the header
         if (line.IndexOf(_header) >= 0)
