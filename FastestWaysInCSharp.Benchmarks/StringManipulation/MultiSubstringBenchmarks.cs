@@ -7,27 +7,30 @@ namespace FastestWaysInCSharp.Benchmarks.StringManipulation;
 [MemoryDiagnoser, DisassemblyDiagnoser(printInstructionAddresses: true, printSource: true, exportDiff: true)]
 public class MultiSubstringBenchmarks
 {
-    [Benchmark]
+    [Benchmark(Baseline = true, Description = "Substring")]
     public string Substring() => MultiSubstring.Substring();
 
-    [Benchmark]
+    [Benchmark(Description = "CharArray")]
     public string CharArray() => MultiSubstring.CharArray();
 
-    [Benchmark]
+    [Benchmark(Description = "CharArray - StackAlloc")]
     public string CharArrayStackAlloc() => MultiSubstring.CharArrayStackAlloc();
 
-    [Benchmark]
+    [Benchmark(Description = "CharArray - StackAlloc - ToString")]
     public string CharArrayStackAllocToString() => MultiSubstring.CharArrayStackAllocToString();
 
-    [Benchmark]
+    [Benchmark(Description = "String.Create")]
     public string StringCreate() => MultiSubstring.StringCreate();
 
-    [Benchmark]
+    [Benchmark(Description = "String.Create - Closure")]
     public string StringCreateClosure() => MultiSubstring.StringCreateClosure();
 
-    [Benchmark]
+    [Benchmark(Description = "String.Create - Reverse")]
     public string StringCreateReverse() => MultiSubstring.StringCreateReverse();
 
-    [Benchmark]
+    [Benchmark(Description = "String.Create - Reverse - SkipLocalsInit")]
+    public string StringCreateReverseSkipLocalsInit() => MultiSubstring.StringCreateReverseSkipLocalsInit();
+
+    [Benchmark(Description = "Zstring")]
     public string Zstring() => MultiSubstring.Zstring();
 }

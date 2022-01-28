@@ -15,24 +15,26 @@ The expected result is: "Loremconsecteturaliqua"
 
 ``` ini
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
-11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1469 (21H2)
+Intel Core i7-10700 CPU 2.90GHz, 1 CPU, 16 logical and 8 physical cores
 .NET SDK=6.0.101
   [Host]     : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT  [AttachedDebugger]
   DefaultJob : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
 
 
 ```
-|                      Method |     Mean |    Error |   StdDev |  Gen 0 | Code Size | Allocated |
-|---------------------------- |---------:|---------:|---------:|-------:|----------:|----------:|
-|         StringCreateReverse | 10.36 ns | 0.159 ns | 0.149 ns | 0.0057 |     146 B |      72 B |
-|                StringCreate | 12.29 ns | 0.214 ns | 0.201 ns | 0.0057 |     146 B |      72 B |
-|         StringCreateClosure | 15.19 ns | 0.347 ns | 0.426 ns | 0.0057 |     146 B |      72 B |
-|         CharArrayStackAlloc | 15.84 ns | 0.355 ns | 0.314 ns | 0.0057 |     808 B |      72 B |
-|                   CharArray | 18.58 ns | 0.402 ns | 0.430 ns | 0.0115 |     735 B |     144 B |
-| CharArrayStackAllocToString | 21.64 ns | 0.485 ns | 0.769 ns | 0.0057 |   1,109 B |      72 B |
-|                     Zstring | 31.89 ns | 0.425 ns | 0.398 ns | 0.0057 |     774 B |      72 B |
-|                   Substring | 40.84 ns | 0.459 ns | 0.383 ns | 0.0197 |     133 B |     248 B |
+|                                     Method |     Mean |    Error |   StdDev | Ratio | Code Size |  Gen 0 | Allocated |
+|------------------------------------------- |---------:|---------:|---------:|------:|----------:|-------:|----------:|
+| &#39;String.Create - Reverse - SkipLocalsInit&#39; | 11.01 ns | 0.100 ns | 0.094 ns |  0.25 |     146 B | 0.0086 |      72 B |
+|                  &#39;String.Create - Reverse&#39; | 13.31 ns | 0.079 ns | 0.070 ns |  0.30 |     146 B | 0.0086 |      72 B |
+|                              String.Create | 13.37 ns | 0.147 ns | 0.137 ns |  0.30 |     146 B | 0.0086 |      72 B |
+|                  &#39;String.Create - Closure&#39; | 16.38 ns | 0.160 ns | 0.142 ns |  0.37 |     146 B | 0.0086 |      72 B |
+|                   &#39;CharArray - StackAlloc&#39; | 17.93 ns | 0.235 ns | 0.220 ns |  0.41 |     808 B | 0.0086 |      72 B |
+|                                  CharArray | 21.00 ns | 0.113 ns | 0.094 ns |  0.48 |     735 B | 0.0172 |     144 B |
+|        &#39;CharArray - StackAlloc - ToString&#39; | 23.41 ns | 0.365 ns | 0.342 ns |  0.53 |   1,109 B | 0.0086 |      72 B |
+|                                    Zstring | 34.41 ns | 0.164 ns | 0.153 ns |  0.79 |     774 B | 0.0086 |      72 B |
+|                                  Substring | 43.82 ns | 0.296 ns | 0.263 ns |  1.00 |     133 B | 0.0296 |     248 B |
+
 
 ## Character replace
 

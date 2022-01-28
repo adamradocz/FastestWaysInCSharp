@@ -178,6 +178,34 @@ public static class MultiSubstring
             buffer[1] = value[1];
             buffer[0] = value[0];            
         });
+    
+    [System.Runtime.CompilerServices.SkipLocalsInit]
+    public static string StringCreateReverseSkipLocalsInit() =>
+        string.Create(22, _text, (buffer, value) =>
+        {
+            buffer[21] = value[121];
+            buffer[20] = value[120];
+            buffer[19] = value[119];
+            buffer[18] = value[118];
+            buffer[17] = value[117];
+            buffer[16] = value[116];
+            buffer[15] = value[38];
+            buffer[14] = value[37];
+            buffer[13] = value[36];
+            buffer[12] = value[35];
+            buffer[11] = value[34];
+            buffer[10] = value[33];
+            buffer[9] = value[32];
+            buffer[8] = value[31];
+            buffer[7] = value[30];
+            buffer[6] = value[29];
+            buffer[5] = value[28];
+            buffer[4] = value[4];
+            buffer[3] = value[3];
+            buffer[2] = value[2];
+            buffer[1] = value[1];
+            buffer[0] = value[0];
+        });
 
     public static string Zstring()
     {
