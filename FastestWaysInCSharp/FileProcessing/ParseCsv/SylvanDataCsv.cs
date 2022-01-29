@@ -7,7 +7,11 @@ public static class SylvanDataCsv
 {
     public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
     {
-        await using var csv = CsvDataReader.Create(filePath);
+        var opts = new CsvDataReaderOptions {
+            BufferSize = 0x100000
+        };
+
+        await using var csv = CsvDataReader.Create(filePath, opts);
 
         while (await csv.ReadAsync())
         {
