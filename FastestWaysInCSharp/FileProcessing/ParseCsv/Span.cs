@@ -5,12 +5,13 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
 public static class Span
 {
-    private const char _delimiter = ';';
-    private const char _forwardSlash = '/';
+    private const char _delimiter = ',';
+    private static readonly FileStreamOptions _fileStreamOptions = new()
+    { Mode = FileMode.Open, Access = FileAccess.Read, Share = FileShare.ReadWrite, BufferSize = 32768, Options = FileOptions.SequentialScan };
 
-    public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
+public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
     {
-        using var reader = new StreamReader(filePath);
+        using var reader = new StreamReader(filePath, _fileStreamOptions);
 
         // Skip the header
         _ = await reader.ReadLineAsync();
@@ -71,20 +72,8 @@ public static class Span
         line = line.Slice(delimiterAt + 1);
 
         // Birthday
-        // Month
-        int slashAt = line.IndexOf(_forwardSlash);
-        int month = int.Parse(line.Slice(0, slashAt));
-        line = line.Slice(slashAt + 1);
-
-        // Day
-        slashAt = line.IndexOf(_forwardSlash);
-        int day = int.Parse(line.Slice(0, slashAt));
-        line = line.Slice(slashAt + 1);
-
-        // Year
         delimiterAt = line.IndexOf(_delimiter);
-        int year = int.Parse(line.Slice(0, delimiterAt));
-        fakeName.Birthday = new DateOnly(year, month, day);
+        fakeName.Birthday = DateOnly.Parse(line.Slice(0, delimiterAt));
         line = line.Slice(delimiterAt + 1);
 
         // Height

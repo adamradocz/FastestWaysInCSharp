@@ -7,10 +7,10 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
 public static class CsvHelperParser
 {
-    private static readonly CsvConfiguration _csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
+    private static readonly CsvConfiguration _csvConfiguration = new(CultureInfo.InvariantCulture)
     {
         HasHeaderRecord = true,
-        Delimiter = ";",
+        Delimiter = ",",
         NewLine = "\r\n"
     };
 

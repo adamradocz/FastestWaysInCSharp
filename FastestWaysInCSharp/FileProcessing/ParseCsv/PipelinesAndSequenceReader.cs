@@ -8,18 +8,19 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
 public static class PipelinesAndSequenceReader
 {
-    private const byte _delimiterAsByte = (byte)';';
-    private const byte _forwardSlashAsByte = (byte)'/';
+    private const byte _delimiterAsByte = (byte)',';
+    private const byte _hyphenAsByte = (byte)'-';
 
     private static readonly byte[] _newLineAsByte = Encoding.UTF8.GetBytes("\r\n");
-    private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id;Guid;Gender;GivenName;Surname;City;StreetAddress;EmailAddress;Birthday;Height;Weight;CreditCardNumber;Domain");
+    private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id,Guid,Gender,GivenName,Surname,City,StreetAddress,EmailAddress,Birthday,Height,Weight,CreditCardNumber,Domain");
 
     public static async Task<List<FakeName>> ParseAsync(string filePath)
     {
-        var fakeNames = new List<FakeName>();
+        var fakeNames = new List<FakeName>(100000);
 
-        await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32768);
+        await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32768, FileOptions.SequentialScan);
         var reader = PipeReader.Create(fileStream);
+
         while (true)
         {
             var result = await reader.ReadAsync();
@@ -108,19 +109,19 @@ public static class PipelinesAndSequenceReader
         line = line.Slice(delimiterAt + 1);
 
         // Birthday
+        // Year
+        int hyphenAt = line.IndexOf(_hyphenAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, hyphenAt), out int year, out _);
+        line = line.Slice(hyphenAt + 1);
+
         // Month
-        int slashAt = line.IndexOf(_forwardSlashAsByte);
-        _ = Utf8Parser.TryParse(line.Slice(0, slashAt), out int month, out _);
-        line = line.Slice(slashAt + 1);
+        hyphenAt = line.IndexOf(_hyphenAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, hyphenAt), out int month, out _);
+        line = line.Slice(hyphenAt + 1);
 
         // Day
-        slashAt = line.IndexOf(_forwardSlashAsByte);
-        _ = Utf8Parser.TryParse(line.Slice(0, slashAt), out int day, out _);
-        line = line.Slice(slashAt + 1);
-
-        // Year
         delimiterAt = line.IndexOf(_delimiterAsByte);
-        _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int year, out _);
+        _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int day, out _);
         fakeName.Birthday = new DateOnly(year, month, day);
         line = line.Slice(delimiterAt + 1);
 

@@ -5,7 +5,7 @@ namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
 public static class StringArray
 {
-    private const char _delimiter = ';';
+    private const char _delimiter = ',';
 
     public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
     {
