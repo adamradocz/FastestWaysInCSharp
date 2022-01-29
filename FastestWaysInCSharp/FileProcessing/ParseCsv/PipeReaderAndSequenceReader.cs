@@ -6,7 +6,7 @@ using System.Text;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
-public static class PipelinesAndSequenceReader
+public static class PipeReaderAndSequenceReader
 {
     private const byte _delimiterAsByte = (byte)',';
     private const byte _hyphenAsByte = (byte)'-';

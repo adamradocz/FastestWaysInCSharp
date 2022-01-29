@@ -34,7 +34,7 @@ public class ParseCsvBenchmarks
     }
 
     [Benchmark]
-    public async Task PipelinesAndSequenceReaderAsnyc() => _ = await PipelinesAndSequenceReader.ParseAsync(FilePath);
+    public async Task PipeReaderAndSequenceReaderAsnyc() => _ = await PipeReaderAndSequenceReader.ParseAsync(FilePath);
 
     [Benchmark]
     public async Task CsvHelperAsync()
