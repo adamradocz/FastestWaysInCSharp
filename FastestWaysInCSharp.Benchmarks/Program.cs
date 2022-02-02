@@ -18,7 +18,10 @@ BenchmarkSwitcher benchmarkSwitcher = new(
         typeof(SerializeJsonBenchmarks),
 
         // Logging
-        typeof(ILoggerPerformanceBenchmarks)
+        typeof(ILoggerPerformanceBenchmarks),
+
+        // Factory
+        typeof(FactoryBenchmarks)
     });
 
 benchmarkSwitcher.Run(args);

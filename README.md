@@ -17,3 +17,5 @@ The fastest ways to do things in C#.
 
 - Logging
   - [ILogger Performance](FastestWaysInCSharp/Logging/README.md)
+
+- [Factory](FastestWaysInCSharp/Factory/README.md)
