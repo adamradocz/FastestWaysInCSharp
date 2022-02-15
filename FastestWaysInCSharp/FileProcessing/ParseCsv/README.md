@@ -6,22 +6,22 @@ Parse the `FakeNames.csv` file which contains 100K recors. The line ending is Wi
 
 ``` ini
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
-11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
-.NET SDK=6.0.101
-  [Host]     : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT  [AttachedDebugger]
-  DefaultJob : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1526 (21H2)
+Intel Core i7-10700 CPU 2.90GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK=6.0.102
+  [Host]     : .NET 6.0.2 (6.0.222.6406), X64 RyuJIT  [AttachedDebugger]
+  DefaultJob : .NET 6.0.2 (6.0.222.6406), X64 RyuJIT
 
 
 ```
 |                           Method |     Mean |   Error |  StdDev |      Gen 0 | Code Size |     Gen 1 |     Gen 2 | Allocated |
 |--------------------------------- |---------:|--------:|--------:|-----------:|----------:|----------:|----------:|----------:|
-| PipeReaderAndSequenceReaderAsnyc | 124.1 ms | 2.42 ms | 2.27 ms |  4800.0000 |      0 MB | 2600.0000 |  800.0000 |     52 MB |
-|               SylvanDataCsvAsync | 134.0 ms | 2.59 ms | 3.79 ms |  4500.0000 |      0 MB | 2750.0000 | 1000.0000 |     48 MB |
-|                        SpanAsnyc | 188.7 ms | 2.01 ms | 1.88 ms |  9666.6667 |      0 MB | 4000.0000 | 1333.3333 |    106 MB |
-|                 StringArrayAsync | 220.9 ms | 3.39 ms | 3.17 ms | 12000.0000 |      0 MB | 4500.0000 | 1500.0000 |    139 MB |
-|                   CsvHelperAsync | 320.7 ms | 6.33 ms | 8.88 ms | 13000.0000 |      0 MB | 4000.0000 | 1000.0000 |    167 MB |
-
+|               SylvanDataCsvAsync | 141.6 ms | 1.99 ms | 1.86 ms |  6500.0000 |      0 MB | 3750.0000 | 1250.0000 |     48 MB |
+|   FullPipeAndSequenceReaderAsnyc | 146.6 ms | 2.86 ms | 2.67 ms |  7250.0000 |      0 MB | 4000.0000 | 1250.0000 |     52 MB |
+| PipeReaderAndSequenceReaderAsnyc | 150.7 ms | 2.89 ms | 3.33 ms |  7250.0000 |      0 MB | 4000.0000 | 1250.0000 |     52 MB |
+|                        SpanAsnyc | 178.5 ms | 3.30 ms | 3.09 ms | 13666.6667 |      0 MB | 5000.0000 | 1666.6667 |    106 MB |
+|                 StringArrayAsync | 234.5 ms | 4.60 ms | 9.19 ms | 18000.0000 |      0 MB | 6000.0000 | 2000.0000 |    139 MB |
+|                   CsvHelperAsync | 356.2 ms | 5.61 ms | 5.24 ms | 21000.0000 |      0 MB | 7000.0000 | 2000.0000 |    167 MB |
 
 ## Sources
 
