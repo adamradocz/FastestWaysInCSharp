@@ -11,6 +11,8 @@ The fastest ways to do things in C#.
   - [Parse byte array string to int](FastestWaysInCSharp/StringManipulation/README.md#parse-byte-array-string-to-int)
   - [String Concatenation](FastestWaysInCSharp/StringManipulation/README.md#string-concatenation)
 
+- [Regular expressions](FastestWaysInCSharp/RegularExpressions/README.md)
+
 - File processing
   - [Parse CSV](FastestWaysInCSharp/FileProcessing/ParseCsv/README.md)
   - [Serialize JSON](FastestWaysInCSharp/FileProcessing/SerializeJson/README.md)
