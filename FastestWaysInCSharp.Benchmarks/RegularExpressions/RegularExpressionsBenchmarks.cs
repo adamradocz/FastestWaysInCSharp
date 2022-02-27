@@ -13,28 +13,28 @@ public class RegularExpressionsBenchmarks
 
     public string Email => "Molly@jourrapide.com";
 
-    [Benchmark]
+    [Benchmark(Description = "Regex - Pattern matching")]
     [BenchmarkCategory("Pattern matching")]
     public void Regex() => _validator.Regex(Email);
 
-    [Benchmark]
+    [Benchmark(Description = "RegexCompiled - Pattern matching")]
     [BenchmarkCategory("Pattern matching")]
     public void RegexCompiled() => _validator.RegexCompiled(Email);
 
-    [Benchmark]
+    [Benchmark(Description = "RegexSourceGen - Pattern matching")]
     [BenchmarkCategory("Pattern matching")]
     public void RegexSourceGen() => _validator.RegexSourceGen(Email);
 
 
-    [Benchmark]
+    [Benchmark(Description = "Regex - Startup")]
     [BenchmarkCategory("Startup")]
     public void RegexStartup() => new EmailAddressValidator().Regex(Email);
 
-    [Benchmark]
+    [Benchmark(Description = "RegexCompiled - Startup")]
     [BenchmarkCategory("Startup")]
     public void RegexCompiledStartup() => new EmailAddressValidator().RegexCompiled(Email);
 
-    [Benchmark]
+    [Benchmark(Description = "RegexSourceGen - Startup")]
     [BenchmarkCategory("Startup")]
     public void RegexSourceGenStartup() => new EmailAddressValidator().RegexSourceGen(Email);
 }
