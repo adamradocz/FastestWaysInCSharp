@@ -21,3 +21,5 @@ The fastest ways to do things in C#.
   - [ILogger Performance](FastestWaysInCSharp/Logging/README.md)
 
 - [Factory](FastestWaysInCSharp/Factory/README.md)
+
+- [Enums](FastestWaysInCSharp/Enums/README.md)
