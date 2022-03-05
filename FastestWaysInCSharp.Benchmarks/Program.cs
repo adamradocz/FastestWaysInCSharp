@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Running;
+using FastestWaysInCSharp.Benchmarks.Enums;
 using FastestWaysInCSharp.Benchmarks.FileProcessing;
 using FastestWaysInCSharp.Benchmarks.StringManipulation;
 
@@ -24,7 +25,10 @@ BenchmarkSwitcher benchmarkSwitcher = new(
         typeof(ILoggerPerformanceBenchmarks),
 
         // Factory
-        typeof(FactoryBenchmarks)
+        typeof(FactoryBenchmarks),
+
+        //Enums
+        typeof(EnumBenchmarks)
     });
 
 benchmarkSwitcher.Run(args);
