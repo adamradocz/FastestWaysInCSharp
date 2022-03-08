@@ -23,10 +23,10 @@ public class EnumBenchmarks
     #region IsDefinedName
 
     [BenchmarkCategory("IsDefinedName"), Benchmark(Baseline = true)]
-    public bool EnumIsDefinedName() => Enum.IsDefined(typeof(Fruits), _apple);
+    public bool EnumIsDefinedName() => Enum.IsDefined(typeof(Fruits), nameof(Fruits.Apple));
 
     [BenchmarkCategory("IsDefinedName"), Benchmark]
-    public bool ExtensionsIsDefinedName() => FruitsExtensions.IsDefined(_apple);
+    public bool ExtensionsIsDefinedName() => FruitsExtensions.IsDefined(nameof(Fruits.Apple));
 
     #endregion
 
