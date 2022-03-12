@@ -58,4 +58,11 @@ public class ParseCsvBenchmarks
             fakeNames.Add(fakeName);
         }
     }
+
+    [Benchmark]
+    public async Task Dummy()
+    {
+        string s = "dummy";
+        s = s.Substring(1, s.Length - 1);
+    }
 }
