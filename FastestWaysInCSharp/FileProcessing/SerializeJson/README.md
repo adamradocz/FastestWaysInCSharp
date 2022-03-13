@@ -7,22 +7,21 @@
 
 ``` ini
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1469 (21H2)
-Intel Core i7-10700 CPU 2.90GHz, 1 CPU, 16 logical and 8 physical cores
-.NET SDK=6.0.101
-  [Host]     : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT  [AttachedDebugger]
-  DefaultJob : .NET 6.0.1 (6.0.121.56705), X64 RyuJIT
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
+11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK=7.0.100-preview.1.22110.4
+  [Host]     : .NET 7.0.0 (7.0.22.7608), X64 RyuJIT  [AttachedDebugger]
+  DefaultJob : .NET 7.0.0 (7.0.22.7608), X64 RyuJIT
 
 
 ```
-|                               Method |     Mean |   Error |  StdDev | Code Size |     Gen 0 |     Gen 1 |     Gen 2 | Allocated |
-|------------------------------------- |---------:|--------:|--------:|----------:|----------:|----------:|----------:|----------:|
-|       SystemTextJsonDeserializeAsync | 312.7 ms | 1.52 ms | 1.42 ms |      0 MB | 6500.0000 | 3500.0000 |  500.0000 |     51 MB |
-| SystemTextJsonSrcGenDeserializeAsync | 324.5 ms | 4.24 ms | 3.96 ms |      0 MB | 7000.0000 | 4000.0000 | 1000.0000 |     51 MB |
-|                                      |          |         |         |           |           |           |           |           |
-|        SystemTextJsonSrcGenSerialize | 118.7 ms | 0.35 ms | 0.33 ms |      0 MB |  400.0000 |         - |         - |     67 MB |
-|              SystemTextJsonSerialize | 120.0 ms | 0.32 ms | 0.30 ms |      0 MB |  400.0000 |         - |         - |     67 MB |
-
+|                               Method |     Mean |    Error |   StdDev |   Median | Code Size |     Gen 0 |    Gen 1 | Allocated |
+|------------------------------------- |---------:|---------:|---------:|---------:|----------:|----------:|---------:|----------:|
+|       SystemTextJsonDeserializeAsync | 266.8 ms | 11.69 ms | 34.48 ms | 278.5 ms |      0 MB | 1666.6667 | 666.6667 |     24 MB |
+| SystemTextJsonSrcGenDeserializeAsync | 278.2 ms | 15.96 ms | 47.07 ms | 272.9 ms |      0 MB | 1666.6667 | 666.6667 |     24 MB |
+|                                      |          |          |          |          |           |           |          |           |
+|        SystemTextJsonSrcGenSerialize | 103.3 ms |  4.71 ms | 13.88 ms | 100.0 ms |      0 MB |  333.3333 |        - |     45 MB |
+|              SystemTextJsonSerialize | 107.1 ms |  3.47 ms | 10.25 ms | 107.8 ms |      0 MB |  333.3333 |        - |     45 MB |
 
 ## Sources
 

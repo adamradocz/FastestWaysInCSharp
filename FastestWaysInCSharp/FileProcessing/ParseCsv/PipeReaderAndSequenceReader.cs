@@ -12,7 +12,7 @@ public static class PipeReaderAndSequenceReader
     private const byte _hyphenAsByte = (byte)'-';
 
     private static readonly byte[] _newLineAsByte = Encoding.UTF8.GetBytes("\r\n");
-    private static readonly byte[] _header = Encoding.UTF8.GetBytes("Id,Guid,Gender,GivenName,Surname,City,StreetAddress,EmailAddress,Birthday,Height,Weight,CreditCardNumber,Domain");
+    private static readonly byte[] _header = Encoding.UTF8.GetBytes(Utilities.Data.CsvHeader);
 
     public static async Task<List<FakeName>> ParseAsync(string filePath)
     {
@@ -78,9 +78,17 @@ public static class PipeReaderAndSequenceReader
         fakeName.Guid = guid;
         line = line.Slice(delimiterAt + 1);
 
+        // IsVip
+        delimiterAt = line.IndexOf(_delimiterAsByte);
+        _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int isVip, out _);
+        fakeName.IsVip = Convert.ToBoolean(isVip);
+        line = line.Slice(delimiterAt + 1);
+
         // Gender
         delimiterAt = line.IndexOf(_delimiterAsByte);
-        fakeName.Gender = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
+        Span<char> gender = stackalloc char[1];
+        _ = Encoding.UTF8.GetChars(line.Slice(0, delimiterAt), gender);
+        fakeName.Gender = gender[0];
         line = line.Slice(delimiterAt + 1);
 
         // GivenName
@@ -91,21 +99,6 @@ public static class PipeReaderAndSequenceReader
         // Surname
         delimiterAt = line.IndexOf(_delimiterAsByte);
         fakeName.Surname = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // City
-        delimiterAt = line.IndexOf(_delimiterAsByte);
-        fakeName.City = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // StreetAddress
-        delimiterAt = line.IndexOf(_delimiterAsByte);
-        fakeName.StreetAddress = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // EmailAddress
-        delimiterAt = line.IndexOf(_delimiterAsByte);
-        fakeName.EmailAddress = Encoding.UTF8.GetString(line.Slice(0, delimiterAt));
         line = line.Slice(delimiterAt + 1);
 
         // Birthday
@@ -138,13 +131,8 @@ public static class PipeReaderAndSequenceReader
         line = line.Slice(delimiterAt + 1);
 
         // CreditCardNumber
-        delimiterAt = line.IndexOf(_delimiterAsByte);
-        _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out long creditCardNumber, out _);
+        _ = Utf8Parser.TryParse(line, out long creditCardNumber, out _);
         fakeName.CreditCardNumber = creditCardNumber;
-        line = line.Slice(delimiterAt + 1);
-
-        // Domain
-        fakeName.Domain = new string(Encoding.UTF8.GetString(line));
 
         return fakeName;
     }

@@ -41,9 +41,15 @@ public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
         fakeName.Guid = new Guid(value);
         line = line.Slice(delimiterAt + 1);
 
+        // IsVip
+        delimiterAt = line.IndexOf(_delimiter);
+        fakeName.IsVip = line.Slice(0, delimiterAt)[0] == '1';
+        line = line.Slice(delimiterAt + 1);
+
         // Gender
         delimiterAt = line.IndexOf(_delimiter);
-        fakeName.Gender = new string(line.Slice(0, delimiterAt));
+        ReadOnlySpan<char> gender = line.Slice(0, delimiterAt);
+        fakeName.Gender = gender[0];
         line = line.Slice(delimiterAt + 1);
 
         // GivenName
@@ -54,21 +60,6 @@ public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
         // Surname
         delimiterAt = line.IndexOf(_delimiter);
         fakeName.Surname = new string(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // City
-        delimiterAt = line.IndexOf(_delimiter);
-        fakeName.City = new string(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // StreetAddress
-        delimiterAt = line.IndexOf(_delimiter);
-        fakeName.StreetAddress = new string(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // EmailAddress
-        delimiterAt = line.IndexOf(_delimiter);
-        fakeName.EmailAddress = new string(line.Slice(0, delimiterAt));
         line = line.Slice(delimiterAt + 1);
 
         // Birthday
@@ -87,12 +78,7 @@ public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
         line = line.Slice(delimiterAt + 1);
 
         // CreditCardNumber
-        delimiterAt = line.IndexOf(_delimiter);
-        fakeName.CreditCardNumber = long.Parse(line.Slice(0, delimiterAt));
-        line = line.Slice(delimiterAt + 1);
-
-        // Domain
-        fakeName.Domain = new string(line);
+        fakeName.CreditCardNumber = long.Parse(line);
 
         return fakeName;
     }
