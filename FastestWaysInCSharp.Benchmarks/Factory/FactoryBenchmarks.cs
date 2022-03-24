@@ -18,12 +18,16 @@ public class FactoryBenchmarks
         var services = new ServiceCollection()
             .AddLogging()
             .AddSingleton<ActivatorUtilitiesCreateInstance>()
-            .AddSingleton<ActivatorUtilitiesCreateFactory>();
+            .AddSingleton<ActivatorUtilitiesCreateFactory>()
+            .AddSingleton(typeof(IActivatorUtilitiesCreateFactoryGeneric<>), typeof(ActivatorUtilitiesCreateFactoryGeneric<>));
 
-       _serviceProvider = services.BuildServiceProvider();
+        _serviceProvider = services.BuildServiceProvider();
     }
 
     [Benchmark(Baseline = true)]
+    public Product New() => new(_loggerFactory.CreateLogger<Product>(), _id);
+
+    [Benchmark]
     public Product NaiveFactory()
     {
         var factroy = new NaiveFactory(_loggerFactory);
@@ -42,5 +46,12 @@ public class FactoryBenchmarks
     {
         var factroy = _serviceProvider.GetRequiredService<ActivatorUtilitiesCreateFactory>();
         return factroy.CreateProduct(_id);
+    }
+
+    [Benchmark(Description = "ActivatorUtilities.CreateFactory<T>")]
+    public Product ActivatorUtilitiesCreateFactoryGeneric()
+    {
+        var factroy = _serviceProvider.GetRequiredService<IActivatorUtilitiesCreateFactoryGeneric<Product>>();
+        return factroy.CreateObject(_id);
     }
 }

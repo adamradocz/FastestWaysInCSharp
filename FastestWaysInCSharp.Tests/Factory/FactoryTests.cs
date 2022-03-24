@@ -44,7 +44,6 @@ public class FactoryTests
         Assert.AreEqual("Product", product.Operation());
     }
 
-
     [TestMethod]
     public void ActivatorUtilitiesCreateFactory_CreatePoductWithParameter_ReturnsProduct()
     {
@@ -58,6 +57,25 @@ public class FactoryTests
 
         // Act
         var product = factroy.CreateProduct(_id);
+
+        // Assert
+        Assert.AreEqual(_id, product.Id);
+        Assert.AreEqual("Product", product.Operation());
+    }
+
+    [TestMethod]
+    public void ActivatorUtilitiesCreateFactoryGeneric_CreatePoductWithParameter_ReturnsProduct()
+    {
+        // Arrange
+        var services = new ServiceCollection()
+            .AddLogging()
+            .AddSingleton(typeof(IActivatorUtilitiesCreateFactoryGeneric<>), typeof(ActivatorUtilitiesCreateFactoryGeneric<>));
+
+        var serviceProvider = services.BuildServiceProvider();
+        var factroy = serviceProvider.GetRequiredService<IActivatorUtilitiesCreateFactoryGeneric<Product>>();
+
+        // Act
+        var product = factroy.CreateObject(_id);
 
         // Assert
         Assert.AreEqual(_id, product.Id);
