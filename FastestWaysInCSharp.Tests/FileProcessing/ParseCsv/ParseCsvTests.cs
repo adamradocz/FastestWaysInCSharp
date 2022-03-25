@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using FastestWaysInCSharp.FileProcessing.Model;
 using FastestWaysInCSharp.FileProcessing.Utilities;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace FastestWaysInCSharp.Tests.FileProcessing.ParseCsv;
 
@@ -20,7 +22,14 @@ public class ParseCsvTests
     }
 
     [TestMethod]
-    public async Task StringArray_ParseAsync() => TestParsedList(await StringArray.ParseAsync(_filePath).ToListAsync());
+    //public async Task StringArray_ParseAsync() => TestParsedList(await StringArray.ParseAsync(_filePath).ToListAsync());
+    public async Task StringArray_ParseAsync()
+    {
+        var a = await StringArray.ParseAsync(_filePath).ToListAsync();
+        XmlSerializer serializer = new XmlSerializer(typeof(List<FakeName>));
+        TextWriter writer = new StreamWriter("a.xml");
+        serializer.Serialize(writer, a);
+    }
 
     [TestMethod]
     public async Task Span_ParseAsync() => TestParsedList(await Span.ParseAsync(_filePath).ToListAsync());

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace FastestWaysInCSharp.FileProcessing.Model;
 
-public class FakeName
+public class FakeName : IXmlSerializable
 {
     public int Id { get; set; }
     public Guid Guid { get; set; }
