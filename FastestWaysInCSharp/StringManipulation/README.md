@@ -6,7 +6,7 @@
 
 Given the following text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
-Return the concatenated strings of the following substings:
+Return the concatenated string of the following substrings:
 - Start index: 0, Length: 5
 - Start index: 28, Length: 11
 - Start index: 116, Length: 6
