@@ -4,7 +4,7 @@ using System.Threading.Channels;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
-public static class Channel
+public static class StringArrayAndChannel
 {
     private const char _delimiter = ',';
 
@@ -19,10 +19,10 @@ public static class Channel
         // Skip the header
         _ = await streamReader.ReadLineAsync().ConfigureAwait(false);
 
-        var producer = ProduceLineAsync(channel.Writer, streamReader);
         var consumer = ProcessLineAsync(channel.Reader, fakeNames);
+        var producer = ProduceLineAsync(channel.Writer, streamReader);        
 
-        await Task.WhenAll(producer, consumer);
+        await Task.WhenAll(consumer, producer).ConfigureAwait(false);
 
         return fakeNames;
     }

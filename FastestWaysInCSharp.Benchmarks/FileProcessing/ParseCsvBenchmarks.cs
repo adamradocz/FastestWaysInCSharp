@@ -23,7 +23,10 @@ public class ParseCsvBenchmarks
         }
     }
 
-    //[Benchmark]
+    [Benchmark]
+    public async Task StringArrayAndChannelAsnyc() => _ = await StringArrayAndChannel.ParseAsync(FilePath);
+
+    [Benchmark]
     public async Task SpanAsnyc()
     {
         var fakeNames = new List<FakeName>();
@@ -40,12 +43,9 @@ public class ParseCsvBenchmarks
     public async Task FullPipeAndSequenceReaderAsnyc() => _ = await FullPipeAndSequenceReader.ParseAsync(FilePath);
 
     [Benchmark]
-    public async Task ChannelAsnyc() => _ = await Channel.ParseAsync(FilePath);
+    public async Task FullPipeAndChannelAsnyc() => _ = await FullPipeAndChannel.ParseAsync(FilePath);
 
     [Benchmark]
-    public string Baseline() => "asd";
-
-    //[Benchmark]
     public async Task CsvHelperAsync()
     {
         var fakeNames = new List<FakeName>();
@@ -55,7 +55,7 @@ public class ParseCsvBenchmarks
         }
     }
 
-    //[Benchmark]
+    [Benchmark]
     public async Task SylvanDataCsvAsync()
     {
         var fakeNames = new List<FakeName>();
