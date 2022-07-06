@@ -12,7 +12,7 @@ public partial class ILoggerPerformance
     [LoggerMessage(0, LogLevel.Information, "Writing hello world response to {Person}")]
     partial void LogHelloWorld(Person person);
 
-    [LoggerMessage(0, LogLevel.Information, "Writing hello world response to {Person}")]
+    [LoggerMessage(1, LogLevel.Information, "Writing hello world response to {Person}")]
     static partial void StaticLogHelloWorld(ILogger logger, Person person);
 
     public ILoggerPerformance()
