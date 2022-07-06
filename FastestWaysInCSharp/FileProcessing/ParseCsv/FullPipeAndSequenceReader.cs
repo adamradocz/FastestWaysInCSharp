@@ -57,6 +57,8 @@ public static class FullPipeAndSequenceReader
 
     private static void ParseLine(ref ReadOnlySequence<byte> buffer, List<FakeName> fakeNames)
     {
+        // Checking that the buffer is only single segment and reading the lines without the SequenceReader seems quite a bit overkill,
+        // but why not.
         if (buffer.IsSingleSegment)
         {
             var firstSpan = buffer.FirstSpan;
