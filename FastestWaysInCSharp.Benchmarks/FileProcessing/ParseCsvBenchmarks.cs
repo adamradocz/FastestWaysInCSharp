@@ -13,7 +13,7 @@ public class ParseCsvBenchmarks
 {
     public static string FilePath => Data.GetCsvTestFilePath();
 
-    //[Benchmark]
+    [Benchmark]
     public async Task StringArrayAsync()
     {
         var fakeNames = new List<FakeName>();
@@ -38,6 +38,12 @@ public class ParseCsvBenchmarks
 
     [Benchmark]
     public async Task FullPipeAndSequenceReaderAsnyc() => _ = await FullPipeAndSequenceReader.ParseAsync(FilePath);
+
+    [Benchmark]
+    public async Task ChannelAsnyc() => _ = await Channel.ParseAsync(FilePath);
+
+    [Benchmark]
+    public string Baseline() => "asd";
 
     //[Benchmark]
     public async Task CsvHelperAsync()

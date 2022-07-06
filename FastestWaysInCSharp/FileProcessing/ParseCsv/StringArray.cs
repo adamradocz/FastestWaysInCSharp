@@ -24,7 +24,7 @@ public static class StringArray
         }
     }
 
-    private static FakeName ParseLine(in string line)
+    private static FakeName ParseLine(string line)
     {
         var parts = line.Split(_delimiter);
         return new FakeName

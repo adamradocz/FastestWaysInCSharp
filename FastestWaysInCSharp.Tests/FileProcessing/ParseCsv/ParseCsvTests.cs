@@ -32,12 +32,15 @@ public class ParseCsvTests
     public async Task FullPipeAndSequenceReader_ParseAsync() => TestParsedList(await FullPipeAndSequenceReader.ParseAsync(_filePath));
 
     [TestMethod]
+    public async Task Channel_ParseAsync() => TestParsedList(await FullPipeAndSequenceReader.ParseAsync(_filePath));
+
+    [TestMethod]
     public async Task CsvHelper_ParseAsync() => TestParsedList(await CsvHelperParser.ParseAsync(_filePath).ToListAsync());
 
     [TestMethod]
     public async Task CSylvanDataCsv_ParseAsync() => TestParsedList(await SylvanDataCsv.ParseAsync(_filePath).ToListAsync());
 
-    private static void TestParsedList(in List<FakeName> fakeNames)
+    private static void TestParsedList(List<FakeName> fakeNames)
     {
         Assert.AreEqual(100000, fakeNames.Count);
 
@@ -46,8 +49,8 @@ public class ParseCsvTests
         Assert.AreEqual(new Guid("748e4c71-9ca6-4ad7-97c9-f7e544dc229c"), fakeNameNumber99.Guid);
         Assert.IsTrue(fakeNameNumber99.IsVip);
         Assert.AreEqual('f', fakeNameNumber99.Gender);
-        Assert.IsTrue(string.Equals("Laura", fakeNameNumber99.GivenName));
-        Assert.IsTrue(string.Equals("Crawford", fakeNameNumber99.Surname));
+        Assert.IsTrue(string.Equals("Laura", fakeNameNumber99.GivenName, StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals("Crawford", fakeNameNumber99.Surname, StringComparison.Ordinal));
         Assert.AreEqual(new DateOnly(1952, 06, 15), fakeNameNumber99.Birthday);
         Assert.AreEqual(168, fakeNameNumber99.Height);
         Assert.AreEqual(64.3f, fakeNameNumber99.Weight);
@@ -58,8 +61,8 @@ public class ParseCsvTests
         Assert.AreEqual(new Guid("becc7c8b-3176-4cb1-8105-2ee8bcf3ebd8"), fakeNameNumber100.Guid);
         Assert.IsFalse(fakeNameNumber100.IsVip);
         Assert.AreEqual('m', fakeNameNumber100.Gender);
-        Assert.IsTrue(string.Equals("Oscar", fakeNameNumber100.GivenName));
-        Assert.IsTrue(string.Equals("Pearson", fakeNameNumber100.Surname));
+        Assert.IsTrue(string.Equals("Oscar", fakeNameNumber100.GivenName, StringComparison.Ordinal));
+        Assert.IsTrue(string.Equals("Pearson", fakeNameNumber100.Surname, StringComparison.Ordinal));
         Assert.AreEqual(new DateOnly(1934, 3, 22), fakeNameNumber100.Birthday);
         Assert.AreEqual(168, fakeNameNumber100.Height);
         Assert.AreEqual(62.5f, fakeNameNumber100.Weight);
