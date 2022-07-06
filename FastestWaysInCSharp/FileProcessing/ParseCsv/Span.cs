@@ -14,11 +14,11 @@ public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
         using var reader = new StreamReader(filePath, _fileStreamOptions);
 
         // Skip the header
-        _ = await reader.ReadLineAsync();
+        _ = await reader.ReadLineAsync().ConfigureAwait(false);
 
         while (!reader.EndOfStream)
         {
-            string? line = await reader.ReadLineAsync();
+            var line = await reader.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(line))
             {
                 yield return ParseLine(line);
@@ -31,7 +31,7 @@ public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
         var fakeName = new FakeName();
 
         // Id
-        int delimiterAt = line.IndexOf(_delimiter);
+        var delimiterAt = line.IndexOf(_delimiter);
         fakeName.Id = int.Parse(line.Slice(0, delimiterAt));
         line = line.Slice(delimiterAt + 1);
 
@@ -48,7 +48,7 @@ public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
 
         // Gender
         delimiterAt = line.IndexOf(_delimiter);
-        ReadOnlySpan<char> gender = line.Slice(0, delimiterAt);
+        var gender = line.Slice(0, delimiterAt);
         fakeName.Gender = gender[0];
         line = line.Slice(delimiterAt + 1);
 

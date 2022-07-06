@@ -3,10 +3,11 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.IO.Pipelines;
 using System.Text;
+using System.Threading.Channels;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
-public static class PipeReaderAndSequenceReader
+public static class ChannelFull
 {
     private const byte _delimiterAsByte = (byte)',';
     private const byte _hyphenAsByte = (byte)'-';
@@ -14,72 +15,65 @@ public static class PipeReaderAndSequenceReader
     private static readonly byte[] _newLineAsByte = Encoding.UTF8.GetBytes("\r\n");
     private static readonly byte[] _header = Encoding.UTF8.GetBytes(Utilities.Data.CsvHeader);
 
-    public static async Task<List<FakeName>> ParseAsync(string filePath)
+    //public static async Task<List<FakeName>> ParseAsync(string filePath)
+    //{
+    //    var fakeNames = new List<FakeName>(100000);
+
+    //    await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32768, FileOptions.SequentialScan);
+
+    //    var channelOptions = new UnboundedChannelOptions() { SingleReader = true, SingleWriter = true };
+    //    var channel = System.Threading.Channels.Channel.CreateUnbounded<string>(channelOptions);
+    //    fileStream.
+    //    channel.Writer.
+
+    //    var fillPipe = FillPipeAsync(fileStream, pipe.Writer);
+    //    var readPipe = ReadPipeAsync(pipe.Reader, fakeNames);
+    //    await Task.WhenAll(fillPipe, readPipe);
+        
+    //    return fakeNames;
+    //}
+
+    private static async Task FillPipeAsync(FileStream stream, PipeWriter writer)
     {
-        var fakeNames = new List<FakeName>(100000);
+        await stream.CopyToAsync(writer.AsStream());
+        await writer.CompleteAsync();
+    }
 
-        await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32768, FileOptions.SequentialScan);
-        var reader = PipeReader.Create(fileStream);
-
+    static async Task ReadPipeAsync(PipeReader reader, List<FakeName> fakeNames)
+    {
         while (true)
         {
-            var readResult = await reader.ReadAsync().ConfigureAwait(false);
-            var buffer = readResult.Buffer;
+            var fileData = await reader.ReadAsync();
 
-            ParseLine(ref buffer, fakeNames);
+            // Convert to Buffer
+            var fileDataBuffer = fileData.Buffer;
 
-            reader.AdvanceTo(buffer.Start, buffer.End);
+            var sequencePosition = ParseLine(fileDataBuffer, fakeNames);
 
-            if (readResult.IsCompleted)
+            reader.AdvanceTo(sequencePosition, fileDataBuffer.End);
+
+            if (fileData.IsCompleted)
             {
                 break;
             }
         }
 
-        await reader.CompleteAsync().ConfigureAwait(false);
-
-        return fakeNames;
+        await reader.CompleteAsync();
     }
 
-    private static void ParseLine(ref ReadOnlySequence<byte> buffer, List<FakeName> fakeNames)
+    private static SequencePosition ParseLine(in ReadOnlySequence<byte> buffer, in List<FakeName> fakeNames)
     {
-        if (buffer.IsSingleSegment)
+        var reader = new SequenceReader<byte>(buffer);
+        while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
         {
-            var firstSpan = buffer.FirstSpan;
-            while (firstSpan.Length > 0)
+            var fakeName = GetFakeName(ref line);
+            if (fakeName != null)
             {
-                var indexOfNewLineByte = firstSpan.IndexOf(_newLineAsByte);
-                if (indexOfNewLineByte == -1)
-                {
-                    return;
-                }
-
-                var line = firstSpan.Slice(0, indexOfNewLineByte);
-                var fakeName = GetFakeName(ref line);
-                if (fakeName != null)
-                {
-                    fakeNames.Add(fakeName);
-                }
-
-                var consumed = indexOfNewLineByte + _newLineAsByte.Length;
-                firstSpan = firstSpan.Slice(consumed);
-                buffer = buffer.Slice(consumed);
+                fakeNames.Add(fakeName);
             }
         }
-        else
-        {
-            var reader = new SequenceReader<byte>(buffer);
-            while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
-            {
-                var fakeName = GetFakeName(ref line);
-                if (fakeName != null)
-                {
-                    fakeNames.Add(fakeName);
-                }
-            }
 
-            buffer = buffer.Slice(reader.Position);
-        }
+        return reader.Position;
     }
 
     private static FakeName? GetFakeName(ref ReadOnlySpan<byte> line)
@@ -93,7 +87,7 @@ public static class PipeReaderAndSequenceReader
         var fakeName = new FakeName();
 
         // Id
-        var delimiterAt = line.IndexOf(_delimiterAsByte);
+        int delimiterAt = line.IndexOf(_delimiterAsByte);
         _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int id, out _);
         fakeName.Id = id;
         line = line.Slice(delimiterAt + 1);
@@ -129,7 +123,7 @@ public static class PipeReaderAndSequenceReader
 
         // Birthday
         // Year
-        var hyphenAt = line.IndexOf(_hyphenAsByte);
+        int hyphenAt = line.IndexOf(_hyphenAsByte);
         _ = Utf8Parser.TryParse(line.Slice(0, hyphenAt), out int year, out _);
         line = line.Slice(hyphenAt + 1);
 

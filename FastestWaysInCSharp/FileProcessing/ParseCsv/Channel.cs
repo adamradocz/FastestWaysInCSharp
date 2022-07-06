@@ -3,10 +3,11 @@ using System.Buffers;
 using System.Buffers.Text;
 using System.IO.Pipelines;
 using System.Text;
+using System.Threading.Channels;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
-public static class PipeReaderAndSequenceReader
+public static class Channel
 {
     private const byte _delimiterAsByte = (byte)',';
     private const byte _hyphenAsByte = (byte)'-';
@@ -21,14 +22,17 @@ public static class PipeReaderAndSequenceReader
         await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32768, FileOptions.SequentialScan);
         var reader = PipeReader.Create(fileStream);
 
+        var channelOptions = new UnboundedChannelOptions() { SingleReader = true, SingleWriter = true };
+        var channel = System.Threading.Channels.Channel.CreateUnbounded<string>(channelOptions);
+
         while (true)
         {
             var readResult = await reader.ReadAsync().ConfigureAwait(false);
             var buffer = readResult.Buffer;
 
-            ParseLine(ref buffer, fakeNames);
+            var actualPosition = ParseLine(buffer, fakeNames);
 
-            reader.AdvanceTo(buffer.Start, buffer.End);
+            reader.AdvanceTo(actualPosition, buffer.End);
 
             if (readResult.IsCompleted)
             {
@@ -41,45 +45,19 @@ public static class PipeReaderAndSequenceReader
         return fakeNames;
     }
 
-    private static void ParseLine(ref ReadOnlySequence<byte> buffer, List<FakeName> fakeNames)
+    private static SequencePosition ParseLine(in ReadOnlySequence<byte> buffer, List<FakeName> fakeNames)
     {
-        if (buffer.IsSingleSegment)
+        var reader = new SequenceReader<byte>(buffer);
+        while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
         {
-            var firstSpan = buffer.FirstSpan;
-            while (firstSpan.Length > 0)
+            var fakeName = GetFakeName(ref line);
+            if (fakeName != null)
             {
-                var indexOfNewLineByte = firstSpan.IndexOf(_newLineAsByte);
-                if (indexOfNewLineByte == -1)
-                {
-                    return;
-                }
-
-                var line = firstSpan.Slice(0, indexOfNewLineByte);
-                var fakeName = GetFakeName(ref line);
-                if (fakeName != null)
-                {
-                    fakeNames.Add(fakeName);
-                }
-
-                var consumed = indexOfNewLineByte + _newLineAsByte.Length;
-                firstSpan = firstSpan.Slice(consumed);
-                buffer = buffer.Slice(consumed);
+                fakeNames.Add(fakeName);
             }
         }
-        else
-        {
-            var reader = new SequenceReader<byte>(buffer);
-            while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
-            {
-                var fakeName = GetFakeName(ref line);
-                if (fakeName != null)
-                {
-                    fakeNames.Add(fakeName);
-                }
-            }
 
-            buffer = buffer.Slice(reader.Position);
-        }
+        return reader.Position;
     }
 
     private static FakeName? GetFakeName(ref ReadOnlySpan<byte> line)

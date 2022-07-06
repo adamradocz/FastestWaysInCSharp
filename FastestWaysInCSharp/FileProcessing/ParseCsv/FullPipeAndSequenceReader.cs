@@ -19,55 +19,81 @@ public static class FullPipeAndSequenceReader
         var fakeNames = new List<FakeName>(100000);
 
         await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32768, FileOptions.SequentialScan);
-        Pipe pipe = new();
-        var fillPipe = FillPipeAsync(fileStream, pipe.Writer);
+        var pipe = new Pipe();
+        var fillPipe = FillPipeAsync(pipe.Writer, fileStream);
         var readPipe = ReadPipeAsync(pipe.Reader, fakeNames);
-        await Task.WhenAll(fillPipe, readPipe);
+        await Task.WhenAll(fillPipe, readPipe).ConfigureAwait(false);
         
         return fakeNames;
     }
 
-    private static async Task FillPipeAsync(FileStream stream, PipeWriter writer)
+    private static async Task FillPipeAsync(PipeWriter writer, FileStream stream)
     {
-        await stream.CopyToAsync(writer.AsStream());
-        await writer.CompleteAsync();
+        await stream.CopyToAsync(writer.AsStream()).ConfigureAwait(false);
+        await writer.CompleteAsync().ConfigureAwait(false);
     }
 
     static async Task ReadPipeAsync(PipeReader reader, List<FakeName> fakeNames)
     {
         while (true)
         {
-            var fileData = await reader.ReadAsync();
+            var readResult = await reader.ReadAsync().ConfigureAwait(false);
 
             // Convert to Buffer
-            var fileDataBuffer = fileData.Buffer;
+            var buffer = readResult.Buffer;
 
-            var sequencePosition = ParseLine(fileDataBuffer, fakeNames);
+            ParseLine(ref buffer, fakeNames);
 
-            reader.AdvanceTo(sequencePosition, fileDataBuffer.End);
+            reader.AdvanceTo(buffer.Start, buffer.End);
 
-            if (fileData.IsCompleted)
+            if (readResult.IsCompleted)
             {
                 break;
             }
         }
 
-        await reader.CompleteAsync();
+        await reader.CompleteAsync().ConfigureAwait(false);
     }
 
-    private static SequencePosition ParseLine(in ReadOnlySequence<byte> buffer, in List<FakeName> fakeNames)
+    private static void ParseLine(ref ReadOnlySequence<byte> buffer, List<FakeName> fakeNames)
     {
-        var reader = new SequenceReader<byte>(buffer);
-        while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
+        if (buffer.IsSingleSegment)
         {
-            var fakeName = GetFakeName(ref line);
-            if (fakeName != null)
+            var firstSpan = buffer.FirstSpan;
+            while (firstSpan.Length > 0)
             {
-                fakeNames.Add(fakeName);
+                var indexOfNewLineByte = firstSpan.IndexOf(_newLineAsByte);
+                if (indexOfNewLineByte == -1)
+                {
+                    return;
+                }
+
+                var line = firstSpan.Slice(0, indexOfNewLineByte);
+                var fakeName = GetFakeName(ref line);
+                if (fakeName != null)
+                {
+                    fakeNames.Add(fakeName);
+                }
+
+                var consumed = indexOfNewLineByte + _newLineAsByte.Length;
+                firstSpan = firstSpan.Slice(consumed);
+                buffer = buffer.Slice(consumed);
             }
         }
+        else
+        {
+            var reader = new SequenceReader<byte>(buffer);
+            while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
+            {
+                var fakeName = GetFakeName(ref line);
+                if (fakeName != null)
+                {
+                    fakeNames.Add(fakeName);
+                }
+            }
 
-        return reader.Position;
+            buffer = buffer.Slice(reader.Position);
+        }
     }
 
     private static FakeName? GetFakeName(ref ReadOnlySpan<byte> line)
@@ -81,7 +107,7 @@ public static class FullPipeAndSequenceReader
         var fakeName = new FakeName();
 
         // Id
-        int delimiterAt = line.IndexOf(_delimiterAsByte);
+        var delimiterAt = line.IndexOf(_delimiterAsByte);
         _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int id, out _);
         fakeName.Id = id;
         line = line.Slice(delimiterAt + 1);
@@ -117,7 +143,7 @@ public static class FullPipeAndSequenceReader
 
         // Birthday
         // Year
-        int hyphenAt = line.IndexOf(_hyphenAsByte);
+        var hyphenAt = line.IndexOf(_hyphenAsByte);
         _ = Utf8Parser.TryParse(line.Slice(0, hyphenAt), out int year, out _);
         line = line.Slice(hyphenAt + 1);
 
