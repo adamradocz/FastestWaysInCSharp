@@ -24,9 +24,6 @@ public class ParseCsvBenchmarks
     }
 
     [Benchmark]
-    public async Task StringArrayAndChannelAsnyc() => _ = await StringArrayAndChannel.ParseAsync(FilePath);
-
-    [Benchmark]
     public async Task SpanAsnyc()
     {
         var fakeNames = new List<FakeName>();
@@ -35,6 +32,9 @@ public class ParseCsvBenchmarks
             fakeNames.Add(fakeName);
         }
     }
+
+    [Benchmark]
+    public async Task SpanAndChannelAsnyc() => _ = await SpanAndChannel.ParseAsync(FilePath);
 
     [Benchmark]
     public async Task PipeReaderAndSequenceReaderAsnyc() => _ = await PipeReaderAndSequenceReader.ParseAsync(FilePath);

@@ -23,10 +23,10 @@ public class ParseCsvTests
     public async Task StringArray_ParseAsync() => TestParsedList(await StringArray.ParseAsync(_filePath).ToListAsync());
 
     [TestMethod]
-    public async Task StringArrayAndChannel_ParseAsync() => TestParsedList(await StringArrayAndChannel.ParseAsync(_filePath));
+    public async Task Span_ParseAsync() => TestParsedList(await Span.ParseAsync(_filePath).ToListAsync());
 
     [TestMethod]
-    public async Task Span_ParseAsync() => TestParsedList(await Span.ParseAsync(_filePath).ToListAsync());
+    public async Task SpanAndChannel_ParseAsync() => TestParsedList(await SpanAndChannel.ParseAsync(_filePath));
 
     [TestMethod]
     public async Task PipeReaderAndSequenceReader_ParseAsync() => TestParsedList(await PipeReaderAndSequenceReader.ParseAsync(_filePath));
