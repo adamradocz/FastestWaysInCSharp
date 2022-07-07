@@ -16,14 +16,13 @@ BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
 ```
 |                           Method |      Mean |    Error |   StdDev |      Gen 0 | Code Size |     Gen 1 |     Gen 2 | Allocated |
 |--------------------------------- |----------:|---------:|---------:|-----------:|----------:|----------:|----------:|----------:|
-|   FullPipeAndSequenceReaderAsnyc |  44.53 ms | 0.886 ms | 1.270 ms |  1363.6364 |      0 MB |  363.6364 |  181.8182 |     16 MB |
-| PipeReaderAndSequenceReaderAsnyc |  47.28 ms | 0.932 ms | 1.275 ms |  1500.0000 |      0 MB |  500.0000 |  250.0000 |     16 MB |
-|               SylvanDataCsvAsync |  80.45 ms | 1.542 ms | 1.950 ms |  1571.4286 |      0 MB | 1142.8571 |  571.4286 |     19 MB |
-|          FullPipeAndChannelAsnyc |  97.55 ms | 1.947 ms | 3.559 ms |  5166.6667 |      0 MB | 5000.0000 | 1666.6667 |     47 MB |
-|       StringArrayAndChannelAsnyc | 108.99 ms | 2.164 ms | 3.304 ms |  8000.0000 |      0 MB | 2600.0000 |  800.0000 |     91 MB |
-|                        SpanAsnyc | 124.15 ms | 2.464 ms | 3.688 ms |  5400.0000 |      0 MB | 3000.0000 | 1000.0000 |     57 MB |
-|                 StringArrayAsync | 171.53 ms | 3.422 ms | 6.511 ms |  8666.6667 |      0 MB | 3333.3333 | 1666.6667 |     92 MB |
-|                   CsvHelperAsync | 250.88 ms | 4.799 ms | 7.750 ms | 10000.0000 |      0 MB | 3000.0000 | 1000.0000 |    124 MB |
+|   FullPipeAndSequenceReaderAsnyc |  44.21 ms | 0.872 ms | 1.163 ms |  1416.6667 |      0 MB |  416.6667 |  250.0000 |     16 MB |
+| PipeReaderAndSequenceReaderAsnyc |  45.84 ms | 0.637 ms | 0.532 ms |  1363.6364 |      0 MB |  363.6364 |  181.8182 |     16 MB |
+|               SylvanDataCsvAsync |  83.25 ms | 1.381 ms | 1.153 ms |  1571.4286 |      0 MB | 1142.8571 |  571.4286 |     19 MB |
+|              SpanAndChannelAsnyc |  91.00 ms | 1.653 ms | 1.546 ms |  5500.0000 |      0 MB | 3166.6667 | 1166.6667 |     57 MB |
+|                        SpanAsnyc | 118.00 ms | 2.202 ms | 2.621 ms |  5400.0000 |      0 MB | 3000.0000 | 1000.0000 |     57 MB |
+|                 StringArrayAsync | 167.39 ms | 3.160 ms | 4.325 ms |  8666.6667 |      0 MB | 3333.3333 | 1666.6667 |     92 MB |
+|                   CsvHelperAsync | 242.95 ms | 4.701 ms | 6.112 ms | 10000.0000 |      0 MB | 3000.0000 | 1000.0000 |    124 MB |
 
 ## What to choose?
 

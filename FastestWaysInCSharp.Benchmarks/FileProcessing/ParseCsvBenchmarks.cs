@@ -43,9 +43,6 @@ public class ParseCsvBenchmarks
     public async Task FullPipeAndSequenceReaderAsnyc() => _ = await FullPipeAndSequenceReader.ParseAsync(FilePath);
 
     [Benchmark]
-    public async Task FullPipeAndChannelAsnyc() => _ = await FullPipeAndChannel.ParseAsync(FilePath);
-
-    [Benchmark]
     public async Task CsvHelperAsync()
     {
         var fakeNames = new List<FakeName>();
