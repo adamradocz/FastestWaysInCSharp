@@ -14,7 +14,7 @@ public static class SpanAndChannel
 
         using var streamReader = new StreamReader(filePath);
         var channelOptions = new UnboundedChannelOptions() { SingleReader = true, SingleWriter = true };
-        var channel = System.Threading.Channels.Channel.CreateUnbounded<string>(channelOptions);
+        var channel = Channel.CreateUnbounded<string>(channelOptions);
 
         // Skip the header
         _ = await streamReader.ReadLineAsync().ConfigureAwait(false);
@@ -34,7 +34,7 @@ public static class SpanAndChannel
             var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(line))
             {
-                await channelWriter.WriteAsync(line);
+                await channelWriter.WriteAsync(line).ConfigureAwait(false);
             }
         }
 
@@ -43,9 +43,11 @@ public static class SpanAndChannel
 
     private static async Task ProcessLineAsync(ChannelReader<string> reader, List<FakeName> fakeNames)
     {
-        while (await reader.WaitToReadAsync())
+        while (await reader.WaitToReadAsync().ConfigureAwait(false))
         {
-            fakeNames.Add(ParseLine(await reader.ReadAsync()));
+            var line = await reader.ReadAsync().ConfigureAwait(false);
+            var fakeName = ParseLine(line);
+            fakeNames.Add(fakeName);
         }
     }
 
