@@ -12,11 +12,11 @@ public static class StringArray
         using var reader = new StreamReader(filePath);
 
         // Skip the header
-        _ = await reader.ReadLineAsync();
+        _ = await reader.ReadLineAsync().ConfigureAwait(false);
 
         while (!reader.EndOfStream)
         {
-            string? line = await reader.ReadLineAsync();
+            var line = await reader.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(line))
             {
                 yield return ParseLine(line);
@@ -24,21 +24,21 @@ public static class StringArray
         }
     }
 
-    private static FakeName ParseLine(in string line)
+    private static FakeName ParseLine(string line)
     {
-        string[] parts = line.Split(_delimiter);
+        var parts = line.Split(_delimiter);
         return new FakeName
         {
-            Id = int.Parse(parts[0]),
+            Id = int.Parse(parts[0], CultureInfo.InvariantCulture),
             Guid = new Guid(parts[1]),
             IsVip = parts[2][0] == '1',
             Gender = parts[3][0],
             GivenName = parts[4],
             Surname = parts[5],
-            Birthday = DateOnly.Parse(parts[6]),
-            Height = int.Parse(parts[7]),
+            Birthday = DateOnly.Parse(parts[6], CultureInfo.InvariantCulture),
+            Height = int.Parse(parts[7], CultureInfo.InvariantCulture),
             Weight = float.Parse(parts[8], NumberStyles.Float, CultureInfo.InvariantCulture),
-            CreditCardNumber = long.Parse(parts[9])
+            CreditCardNumber = long.Parse(parts[9], CultureInfo.InvariantCulture)
         };
     }
 }

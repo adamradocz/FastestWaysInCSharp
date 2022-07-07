@@ -34,6 +34,9 @@ public class ParseCsvBenchmarks
     }
 
     [Benchmark]
+    public async Task SpanAndChannelAsnyc() => _ = await SpanAndChannel.ParseAsync(FilePath);
+
+    [Benchmark]
     public async Task PipeReaderAndSequenceReaderAsnyc() => _ = await PipeReaderAndSequenceReader.ParseAsync(FilePath);
 
     [Benchmark]

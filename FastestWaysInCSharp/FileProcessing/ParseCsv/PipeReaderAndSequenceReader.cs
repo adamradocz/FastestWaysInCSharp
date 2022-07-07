@@ -23,37 +23,65 @@ public static class PipeReaderAndSequenceReader
 
         while (true)
         {
-            var result = await reader.ReadAsync();
-            var buffer = result.Buffer;
+            var readResult = await reader.ReadAsync().ConfigureAwait(false);
+            var buffer = readResult.Buffer;
 
-            var actualPosition = ParseLine(buffer, fakeNames);
+            ParseLine(ref buffer, fakeNames);
 
-            reader.AdvanceTo(actualPosition, buffer.End);
+            reader.AdvanceTo(buffer.Start, buffer.End);
 
-            if (result.IsCompleted)
+            if (readResult.IsCompleted)
             {
                 break;
             }
         }
 
-        await reader.CompleteAsync();
+        await reader.CompleteAsync().ConfigureAwait(false);
 
         return fakeNames;
     }
 
-    private static SequencePosition ParseLine(in ReadOnlySequence<byte> buffer, in List<FakeName> fakeNames)
+    private static void ParseLine(ref ReadOnlySequence<byte> buffer, List<FakeName> fakeNames)
     {
-        var reader = new SequenceReader<byte>(buffer);
-        while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
+        // Checking that the buffer is only single segment and reading the lines without the SequenceReader seems quite a bit overkill,
+        // but why not.
+        if (buffer.IsSingleSegment)
         {
-            var fakeName = GetFakeName(ref line);
-            if (fakeName != null)
+            var firstSpan = buffer.FirstSpan;
+            while (firstSpan.Length > 0)
             {
-                fakeNames.Add(fakeName);
+                var indexOfNewLineByte = firstSpan.IndexOf(_newLineAsByte);
+                if (indexOfNewLineByte == -1)
+                {
+                    return;
+                }
+
+                var line = firstSpan.Slice(0, indexOfNewLineByte);
+                var fakeName = GetFakeName(ref line);
+                if (fakeName != null)
+                {
+                    fakeNames.Add(fakeName);
+                }
+
+                var consumed = indexOfNewLineByte + _newLineAsByte.Length;
+                firstSpan = firstSpan.Slice(consumed);
+                buffer = buffer.Slice(consumed);
             }
         }
+        else
+        {
+            var reader = new SequenceReader<byte>(buffer);
+            while (reader.TryReadTo(out ReadOnlySpan<byte> line, _newLineAsByte))
+            {
+                var fakeName = GetFakeName(ref line);
+                if (fakeName != null)
+                {
+                    fakeNames.Add(fakeName);
+                }
+            }
 
-        return reader.Position;
+            buffer = buffer.Slice(reader.Position);
+        }
     }
 
     private static FakeName? GetFakeName(ref ReadOnlySpan<byte> line)
@@ -67,7 +95,7 @@ public static class PipeReaderAndSequenceReader
         var fakeName = new FakeName();
 
         // Id
-        int delimiterAt = line.IndexOf(_delimiterAsByte);
+        var delimiterAt = line.IndexOf(_delimiterAsByte);
         _ = Utf8Parser.TryParse(line.Slice(0, delimiterAt), out int id, out _);
         fakeName.Id = id;
         line = line.Slice(delimiterAt + 1);
@@ -103,7 +131,7 @@ public static class PipeReaderAndSequenceReader
 
         // Birthday
         // Year
-        int hyphenAt = line.IndexOf(_hyphenAsByte);
+        var hyphenAt = line.IndexOf(_hyphenAsByte);
         _ = Utf8Parser.TryParse(line.Slice(0, hyphenAt), out int year, out _);
         line = line.Slice(hyphenAt + 1);
 

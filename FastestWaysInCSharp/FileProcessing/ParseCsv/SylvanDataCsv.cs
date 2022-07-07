@@ -16,7 +16,7 @@ public static class SylvanDataCsv
 
         await using var csv = CsvDataReader.Create(filePath, options);
 
-        while (await csv.ReadAsync())
+        while (await csv.ReadAsync().ConfigureAwait(false))
         {
             yield return new FakeName
             {

@@ -1,28 +1,53 @@
 using FastestWaysInCSharp.FileProcessing.Model;
 using System.Globalization;
+using System.Threading.Channels;
 
 namespace FastestWaysInCSharp.FileProcessing.ParseCsv;
 
-public static class Span
+public static class SpanAndChannel
 {
     private const char _delimiter = ',';
-    private static readonly FileStreamOptions _fileStreamOptions = new()
-    { Mode = FileMode.Open, Access = FileAccess.Read, Share = FileShare.ReadWrite, BufferSize = 32768, Options = FileOptions.SequentialScan };
 
-public static async IAsyncEnumerable<FakeName> ParseAsync(string filePath)
+    public static async Task<List<FakeName>> ParseAsync(string filePath)
     {
-        using var reader = new StreamReader(filePath, _fileStreamOptions);
+        var fakeNames = new List<FakeName>(100000);
+
+        using var streamReader = new StreamReader(filePath);
+        var channelOptions = new UnboundedChannelOptions() { SingleReader = true, SingleWriter = true };
+        var channel = Channel.CreateUnbounded<string>(channelOptions);
 
         // Skip the header
-        _ = await reader.ReadLineAsync().ConfigureAwait(false);
+        _ = await streamReader.ReadLineAsync().ConfigureAwait(false);
 
-        while (!reader.EndOfStream)
+        var consumer = ConsumeLineAsync(channel.Reader, fakeNames);
+        var producer = ProduceLineAsync(channel.Writer, streamReader);        
+
+        await Task.WhenAll(consumer, producer).ConfigureAwait(false);
+
+        return fakeNames;
+    }
+
+    private static async Task ProduceLineAsync(ChannelWriter<string> channelWriter, StreamReader streamReader)
+    {
+        while (!streamReader.EndOfStream)
         {
-            var line = await reader.ReadLineAsync().ConfigureAwait(false);
+            var line = await streamReader.ReadLineAsync().ConfigureAwait(false);
             if (!string.IsNullOrEmpty(line))
             {
-                yield return ParseLine(line);
+                await channelWriter.WriteAsync(line).ConfigureAwait(false);
             }
+        }
+
+        channelWriter.Complete();
+    }
+
+    private static async Task ConsumeLineAsync(ChannelReader<string> reader, List<FakeName> fakeNames)
+    {
+        while (await reader.WaitToReadAsync().ConfigureAwait(false))
+        {
+            var line = await reader.ReadAsync().ConfigureAwait(false);
+            var fakeName = ParseLine(line);
+            fakeNames.Add(fakeName);
         }
     }
 
