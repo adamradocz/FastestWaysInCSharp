@@ -19,7 +19,7 @@ public static class SpanAndChannel
         // Skip the header
         _ = await streamReader.ReadLineAsync().ConfigureAwait(false);
 
-        var consumer = ProcessLineAsync(channel.Reader, fakeNames);
+        var consumer = ConsumeLineAsync(channel.Reader, fakeNames);
         var producer = ProduceLineAsync(channel.Writer, streamReader);        
 
         await Task.WhenAll(consumer, producer).ConfigureAwait(false);
@@ -41,7 +41,7 @@ public static class SpanAndChannel
         channelWriter.Complete();
     }
 
-    private static async Task ProcessLineAsync(ChannelReader<string> reader, List<FakeName> fakeNames)
+    private static async Task ConsumeLineAsync(ChannelReader<string> reader, List<FakeName> fakeNames)
     {
         while (await reader.WaitToReadAsync().ConfigureAwait(false))
         {
