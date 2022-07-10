@@ -1,6 +1,3 @@
-using FastestWaysInCSharp.FileProcessing.ParseJson;
-using System.Text.Json.Serialization;
-
 namespace FastestWaysInCSharp.FileProcessing.Model;
 
 public class FakeName
@@ -16,7 +13,6 @@ public class FakeName
     public string? GivenName { get; set; }
     public string? Surname { get; set; }
 
-    [JsonConverter(typeof(DateOnlyConverterNullable))]
     public DateOnly? Birthday { get; set; }
     public int Height { get; set; }
     public float Weight { get; set; }
