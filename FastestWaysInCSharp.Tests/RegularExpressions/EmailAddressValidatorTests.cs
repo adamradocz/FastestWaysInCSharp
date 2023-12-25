@@ -22,11 +22,8 @@ public class EmailAddressValidatorTests
     [DynamicData(nameof(Data), DynamicDataSourceType.Property)]
     public void Regex(string email, bool expextedResult)
     {
-        // Arrange
-        var validator = new EmailAddressValidator();
-
-        // Act
-        bool isValid = validator.Regex(email);
+        // Arrange & Act
+        bool isValid = EmailAddressValidator.Regex(email);
 
         // Assert
         Assert.AreEqual(expextedResult, isValid);
@@ -36,11 +33,8 @@ public class EmailAddressValidatorTests
     [DynamicData(nameof(Data), DynamicDataSourceType.Property)]
     public void RegexCompiled(string email, bool expextedResult)
     {
-        // Arrange
-        var validator = new EmailAddressValidator();
-
-        // Act
-        bool isValid = validator.RegexCompiled(email);
+        // Arrange & Act
+        bool isValid = EmailAddressValidator.RegexCompiled(email);
 
         // Assert
         Assert.AreEqual(expextedResult, isValid);
@@ -50,11 +44,8 @@ public class EmailAddressValidatorTests
     [DynamicData(nameof(Data), DynamicDataSourceType.Property)]
     public void RegexSourceGen(string email, bool expextedResult)
     {
-        // Arrange
-        var validator = new EmailAddressValidator();
-
-        // Act
-        bool isValid = validator.RegexSourceGen(email);
+        // Arrange & Act
+        bool isValid = EmailAddressValidator.RegexSourceGen(email);
 
         // Assert
         Assert.AreEqual(expextedResult, isValid);

@@ -5,23 +5,24 @@
 - Deserialize the `FakeNames.json` file which contains 100K recors.
 - Serialize the `List<FakeName>` list to string which contains 100K elements.
 
-``` ini
+```
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.22000
-11th Gen Intel Core i7-11800H 2.30GHz, 1 CPU, 16 logical and 8 physical cores
-.NET SDK=7.0.100-preview.5.22307.18
-  [Host]     : .NET 7.0.0 (7.0.22.30112), X64 RyuJIT  [AttachedDebugger]
-  DefaultJob : .NET 7.0.0 (7.0.22.30112), X64 RyuJIT
+BenchmarkDotNet v0.13.11, Windows 11 (10.0.22621.2861/22H2/2022Update/SunValley2)
+11th Gen Intel Core i7-11370H 3.30GHz, 1 CPU, 8 logical and 4 physical cores
+.NET SDK 8.0.100
+  [Host]     : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  DefaultJob : .NET 8.0.0 (8.0.23.53103), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
 
 
 ```
-|                               Method |      Mean |    Error |   StdDev |     Gen 0 | Code Size |    Gen 1 |    Gen 2 | Allocated |
-|------------------------------------- |----------:|---------:|---------:|----------:|----------:|---------:|---------:|----------:|
-|       SystemTextJsonDeserializeAsync | 165.64 ms | 2.941 ms | 2.751 ms | 1500.0000 |      0 MB | 500.0000 | 250.0000 |     17 MB |
-| SystemTextJsonSrcGenDeserializeAsync | 170.34 ms | 3.295 ms | 2.921 ms | 1000.0000 |      0 MB |        - |        - |     17 MB |
-|                                      |           |          |          |           |           |          |          |           |
-|        SystemTextJsonSrcGenSerialize |  68.80 ms | 1.319 ms | 1.761 ms |  125.0000 |      0 MB |        - |        - |     43 MB |
-|              SystemTextJsonSerialize |  72.17 ms | 1.112 ms | 0.986 ms |         - |      0 MB |        - |        - |     40 MB |
+| Method                               | Mean      | Error    | StdDev   | Code Size | Gen0      | Gen1      | Gen2     | Allocated |
+|------------------------------------- |----------:|---------:|---------:|----------:|----------:|----------:|---------:|----------:|
+| SystemTextJsonSrcGenDeserializeAsync | 130.32 ms | 1.073 ms | 0.951 ms |     409 B | 2000.0000 | 1000.0000 |        - |  16.78 MB |
+| SystemTextJsonDeserializeAsync       | 131.92 ms | 1.223 ms | 1.144 ms |     409 B | 2000.0000 | 1000.0000 |        - |  16.78 MB |
+|                                      |           |          |          |           |           |           |          |           |
+| SystemTextJsonSrcGenSerialize        |  51.30 ms | 0.376 ms | 0.314 ms |     246 B |  600.0000 |  300.0000 | 300.0000 |  42.74 MB |
+| SystemTextJsonSerialize              |  65.41 ms | 0.283 ms | 0.250 ms |   1,407 B |  250.0000 |  250.0000 | 250.0000 |  40.45 MB |
+
 
 ## Sources
 
